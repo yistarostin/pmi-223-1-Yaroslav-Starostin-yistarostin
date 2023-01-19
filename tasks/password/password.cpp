@@ -16,5 +16,5 @@ bool ValidatePassword(const std::string& password) {
                                              std::any_of(password.begin(), password.end(), ::ispunct)};
     auto has_enought_different_types =
         std::count_if(character_classes.begin(), character_classes.end(), std::identity()) >= 3;
-    return are_characters_valid && is_length_appropriate && has_enought_different_types;
+    return is_length_appropriate && are_characters_valid && has_enought_different_types;
 }
