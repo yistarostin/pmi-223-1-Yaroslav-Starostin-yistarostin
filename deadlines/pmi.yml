@@ -1,3 +1,16 @@
+- group:    01-homework-one
+  start:    18-01-2023 00:00
+  deadline: 01-02-2023 23:59
+  tasks:
+    - task: associative_operation
+      score: 100
+    - task: palindrome
+      score: 100
+    - task: password
+      score: 100
+    - task: sort_students
+      score: 100
+
 - group:    00-setup
   start:    11-01-2023 00:00
   deadline: 19-03-2023 23:59
