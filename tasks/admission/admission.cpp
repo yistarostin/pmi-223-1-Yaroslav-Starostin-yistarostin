@@ -26,6 +26,7 @@ AdmissionTable FillUniversities(const std::vector<University>& universities, con
     std::sort(sorted_applicants.begin(), sorted_applicants.end(),
               [](const Applicant*& a, const Applicant*& b) { return *a < *b; });
     std::unordered_map<std::string_view, size_t> left_space;
+    left_space.reserve(universities.size());
     for (const auto& uni : universities) {
         left_space[uni.name] = uni.max_students;
     }
@@ -41,8 +42,9 @@ AdmissionTable FillUniversities(const std::vector<University>& universities, con
         }
     }
 
-    for(auto& uni_abiturs : admissions | std::views::values){
-        std::sort(uni_abiturs.begin(), uni_abiturs.end(), [](const Student*& a, const Student*& b){return a->name < b->name;});
+    for (auto& uni_abiturs : admissions | std::views::values) {
+        std::sort(uni_abiturs.begin(), uni_abiturs.end(),
+                  [](const Student*& a, const Student*& b) { return a->name < b->name; });
     }
     return admissions;
 }
