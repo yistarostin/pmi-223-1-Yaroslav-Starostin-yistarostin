@@ -42,7 +42,7 @@ AdmissionTable FillUniversities(const std::vector<University>& universities, con
         }
     }
 
-    for (auto& uni_abiturs : admissions | std::views::values) {
+    for (auto& [_, uni_abiturs] : admissions) {
         std::sort(uni_abiturs.begin(), uni_abiturs.end(),
                   [](const Student*& a, const Student*& b) { return a->name < b->name; });
     }
