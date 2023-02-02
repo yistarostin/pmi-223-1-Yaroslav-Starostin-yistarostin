@@ -10,11 +10,11 @@ bool operator<(const Event& lhs, const Event& rhs) {
 }
 
 ScoreTable GetScoredStudents(const Events& events, time_t score_time) {
-    std::set<Event>
+    std::multiset<Event>
         sorted_happened_events;  // anyway we will need O(N logN) complexity so lets just use set for simplicity
     std::copy_if(events.begin(), events.end(), std::inserter(sorted_happened_events, sorted_happened_events.begin()),
                  [score_time](const auto& event) { return event.time <= score_time; });
-    std::unordered_map<StudentName, std::map<TaskName, size_t>> opened_merge_requsts;
+    std::unordered_map<StudentName, std::map<TaskName, int>> opened_merge_requsts;
     std::unordered_map<StudentName, std::map<TaskName, bool>> last_submit_results;
     ScoreTable currently_accepted;
     for (auto& [guy, task, time, type] : sorted_happened_events) {
