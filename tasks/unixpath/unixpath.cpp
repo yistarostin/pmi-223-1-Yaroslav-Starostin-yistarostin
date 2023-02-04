@@ -40,6 +40,9 @@ void WalkThePath(std::string_view path, std::vector<std::string_view>& current_l
 std::string NormalizePath(std::string_view current_working_dir, std::string_view local_path) {
     std::vector<std::string_view> current_location;
     WalkThePath(current_working_dir, current_location);
+    if (local_path[0] == '/') {
+        current_location.clear();
+    }
     WalkThePath(local_path, current_location);
     std::string normalized_path;
     for (auto directory : current_location) {
