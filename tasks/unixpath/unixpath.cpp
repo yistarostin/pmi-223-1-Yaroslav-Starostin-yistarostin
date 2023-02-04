@@ -12,11 +12,15 @@ std::vector<std::string_view> Split(std::string_view str, char delimeter) {
     auto l = str.begin();
     for (auto r = str.begin(); r != str.end(); ++r) {
         if (*r == delimeter) {
-            splitted_str.emplace_back(std::string_view{l, r});
+            if(l != r){
+                splitted_str.emplace_back(std::string_view{l, r});
+            }
             l = r + 1;
         }
     }
-    splitted_str.emplace_back(std::string_view{l, str.end()});
+    if(l != str.end()) {
+        splitted_str.emplace_back(std::string_view{l, str.end()});
+    }
     return splitted_str;
 }
 
