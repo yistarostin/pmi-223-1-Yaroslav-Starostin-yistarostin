@@ -112,12 +112,12 @@ std::vector<std::string_view> Search(std::string_view text, std::string_view que
     auto tokenized_query{Tokenize(query, [](char c) { return !std::isalpha(c); })};
     std::sort(tokenized_query.begin(), tokenized_query.end());
     tokenized_query.erase(std::unique(tokenized_query.begin(), tokenized_query.end()), tokenized_query.end());
-    std::vector<std::string> QQ(tokenized_query.size());
+    std::vector<std::string> qq(tokenized_query.size());
     for (size_t i = 0; i < tokenized_query.size(); ++i) {
-        std::transform(tokenized_query[i].begin(), tokenized_query[i].end(), std::back_inserter(QQ[i]), ::tolower);
+        std::transform(tokenized_query[i].begin(), tokenized_query[i].end(), std::back_inserter(qq[i]), ::tolower);
     }
     std::unordered_set<std::string_view> query_words;
-    for (const std::string& kek : QQ) {
+    for (const std::string& kek : qq) {
         query_words.insert(std::string_view{kek.begin(), kek.end()});
     }
     const auto tokenized_by_lines{Tokenize(text, iscntrl)};
