@@ -1,5 +1,6 @@
 #include "search.h"
 
+#include <algorithm>
 #include <cctype>
 #include <cmath>
 #include <functional>
@@ -82,7 +83,10 @@ long double GetLineTF(std::string_view line, std::string_view target_word) {
 
 std::vector<std::string_view> Search(std::string_view text, std::string_view query, size_t results_count) {
     std::unordered_map<std::string_view, size_t> words_count;  // word -> text.count(word)
-    const auto tokenized_query{Tokenize(query, [](char c) { return !std::isalpha(c); })};
+    auto tokenized_query{Tokenize(query, [](char c) { return !std::isalpha(c); })};
+    // make query consist of unique words
+    std::sort(tokenized_query.begin(), tokenized_query.end());
+    tokenized_query.erase(std::unique(tokenized_query.begin(), tokenized_query.end()), tokenized_query.end());
     const auto query_words = std::unordered_set<std::string_view>(tokenized_query.begin(), tokenized_query.end());
     const auto tokenized_by_lines{Tokenize(text, iscntrl)};
     auto idf{GenerateIDF(tokenized_by_lines, query_words)};
