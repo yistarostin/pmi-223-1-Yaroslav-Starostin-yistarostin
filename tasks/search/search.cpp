@@ -4,8 +4,10 @@
 #include <cctype>
 #include <cmath>
 #include <functional>
+#include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
 
 template <typename F>
 std::vector<std::string_view> Tokenize(std::string_view str, F fn) {
@@ -25,15 +27,39 @@ std::vector<std::string_view> Tokenize(std::string_view str, F fn) {
     return splitted_str;
 }
 
+bool CompareStringIgnoringCase(std::string_view a, std::string_view b) {
+    if (a.size() != b.size()) {
+        return false;
+    }
+    for (size_t i = 0; i < a.size(); ++i) {
+        if (std::isalpha(a[i])) {
+            if (!(isalpha(b[i]) && tolower(a[i]) == tolower(b[i]))) {
+                return false;
+            }
+        } else {
+            if (a[i] != b[i]) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 std::unordered_map<std::string_view, size_t> GenerateIDF(const std::vector<std::string_view>& tokenized_by_lines,
                                                          const std::unordered_set<std::string_view>& query_words) {
     std::unordered_map<std::string_view, size_t> idf;  // word -> IDF(word)
     for (std::string_view line : tokenized_by_lines) {
-        std::unordered_set<std::string_view> in_current_line;
+        std::unordered_set<std::string> in_current_line;  // TODO: put strings in lower case
         for (std::string_view word : Tokenize(line, [](char c) { return !std::isalpha(c); })) {
-            if (query_words.contains(word)) {
-                if (in_current_line.count(word) == 0) {
-                    in_current_line.insert(word);
+            if (std::any_of(query_words.begin(), query_words.end(),
+                            [word](std::string_view token) { return CompareStringIgnoringCase(word, token); })) {
+                if (!std::any_of(in_current_line.begin(), in_current_line.end(),
+                                 [word](std::string_view token) { return CompareStringIgnoringCase(word, token); })) {
+                    std::string copy;
+                    for (char c : word) {
+                        copy.push_back(static_cast<char>(tolower(c)));
+                    }
+                    in_current_line.insert(copy);
                     ++idf[word];
                 }
             }
@@ -84,10 +110,16 @@ long double GetLineTF(std::string_view line, std::string_view target_word) {
 std::vector<std::string_view> Search(std::string_view text, std::string_view query, size_t results_count) {
     std::unordered_map<std::string_view, size_t> words_count;  // word -> text.count(word)
     auto tokenized_query{Tokenize(query, [](char c) { return !std::isalpha(c); })};
-    // make query consist of unique words
     std::sort(tokenized_query.begin(), tokenized_query.end());
     tokenized_query.erase(std::unique(tokenized_query.begin(), tokenized_query.end()), tokenized_query.end());
-    const auto query_words = std::unordered_set<std::string_view>(tokenized_query.begin(), tokenized_query.end());
+    std::vector<std::string> QQ(tokenized_query.size());
+    for (size_t i = 0; i < tokenized_query.size(); ++i) {
+        std::transform(tokenized_query[i].begin(), tokenized_query[i].end(), std::back_inserter(QQ[i]), ::tolower);
+    }
+    std::unordered_set<std::string_view> query_words;
+    for (const std::string& kek : QQ) {
+        query_words.insert(std::string_view{kek.begin(), kek.end()});
+    }
     const auto tokenized_by_lines{Tokenize(text, iscntrl)};
     auto idf{GenerateIDF(tokenized_by_lines, query_words)};
     auto interesting_lines{GetInterestingLines(tokenized_by_lines, tokenized_query)};
