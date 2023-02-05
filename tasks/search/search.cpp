@@ -7,7 +7,8 @@
 #include <unordered_set>
 
 template <typename F>
-requires std::invocable<F&, int> std::vector<std::string_view> Tokenize(std::string_view str, F fn) {
+    requires std::invocable<F&, int>
+std::vector<std::string_view> Tokenize(std::string_view str, F fn) {
     std::vector<std::string_view> splitted_str;
     auto l = str.begin();
     for (auto r = str.begin(); r != str.end(); ++r) {
@@ -74,7 +75,7 @@ std::vector<std::string_view> Search(std::string_view text, std::string_view que
     const auto tokenized_by_lines{Tokenize(text, iscntrl)};
     auto idf{GenerateIDF(tokenized_by_lines, query_words)};
     auto interesting_lines{GetInterestingLines(tokenized_by_lines, tokenized_query)};
-    if (interesting_lines.empty()){//there are no lines with positive TF_IDF
+    if (interesting_lines.empty()) {  // there are no lines with positive TF_IDF
         return {};
     }
     std::unordered_map<std::string_view, long double> tf_idf_per_line;
