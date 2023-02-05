@@ -45,6 +45,19 @@ bool CompareStringIgnoringCase(std::string_view a, std::string_view b) {
     return true;
 }
 
+struct LineMetric {
+    long double metrics_value;
+    size_t indexInOriginalText;
+    std::string_view line_content;
+
+    auto operator<(const LineMetric& other) const {
+        if (metrics_value != other.metrics_value) {
+            return metrics_value > other.metrics_value;
+        }
+        return indexInOriginalText < other.indexInOriginalText;
+    }
+};
+
 std::unordered_map<std::string_view, size_t> GenerateIDF(const std::vector<std::string_view>& tokenized_by_lines,
                                                          const std::unordered_set<std::string_view>& query_words) {
     std::unordered_map<std::string_view, size_t> idf;  // word -> IDF(word)
@@ -68,27 +81,17 @@ std::unordered_map<std::string_view, size_t> GenerateIDF(const std::vector<std::
     return idf;
 }
 
-struct LineMetric {
-    long double metrics_value;
-    size_t indexInOriginalText;
-    std::string_view line_content;
-
-    auto operator<(const LineMetric& other) const {
-        if (metrics_value != other.metrics_value) {
-            return metrics_value > other.metrics_value;
-        }
-        return indexInOriginalText < other.indexInOriginalText;
-    }
-};
-
 auto GetInterestingLines(const std::vector<std::string_view>& tokenized_by_lines,
-                         const std::vector<std::string_view>& tokenized_query) {
+                         const std::unordered_set<std::string_view>& words_bag) {
     std::vector<std::pair<std::string_view, size_t>> interesting_lines;
-    const std::unordered_set<std::string_view> words_bag(tokenized_query.begin(), tokenized_query.end());
     for (size_t i = 0; std::string_view line : tokenized_by_lines) {
         auto tokenized_line = Tokenize(line, [](char c) { return !std::isalpha(c); });
-        if (std::any_of(tokenized_line.begin(), tokenized_line.end(),
-                        [&words_bag](std::string_view word) { return words_bag.contains(word); })) {
+        if (std::any_of(tokenized_line.begin(), tokenized_line.end(), [&words_bag](std::string_view word) {
+                return std::any_of(words_bag.begin(), words_bag.end(), [word](std::string_view token) {
+                    return CompareStringIgnoringCase(token, word); /*words_bag.contains(word);*/
+                    ;
+                });
+            })) {
             interesting_lines.emplace_back(line, i++);  // TODO: what if 2 lines and be equal ??? 😡😡
         }
     }
@@ -100,7 +103,7 @@ long double GetLineTF(std::string_view line, std::string_view target_word) {
     std::size_t total_words = tokenized_line.size();
     std::size_t matched_words = 0;
     for (std::string_view word : tokenized_line) {
-        if (target_word == word) {
+        if (CompareStringIgnoringCase(word, target_word)) {
             ++matched_words;
         }
     }
@@ -122,7 +125,7 @@ std::vector<std::string_view> Search(std::string_view text, std::string_view que
     }
     const auto tokenized_by_lines{Tokenize(text, iscntrl)};
     auto idf{GenerateIDF(tokenized_by_lines, query_words)};
-    auto interesting_lines{GetInterestingLines(tokenized_by_lines, tokenized_query)};
+    auto interesting_lines{GetInterestingLines(tokenized_by_lines, query_words)};
     if (interesting_lines.empty()) {  // there are no lines with positive TF_IDF
         return {};
     }
@@ -140,7 +143,7 @@ std::vector<std::string_view> Search(std::string_view text, std::string_view que
             result.push_back(LineMetric{.metrics_value = s, .indexInOriginalText = index, .line_content = line});
         }
     }
-    std::sort(result.begin(), result.end());
+    std::stable_sort(result.begin(), result.end());
     std::vector<std::string_view> search_result;
     for (size_t i = 0; i < std::min<size_t>(results_count, result.size()); ++i) {
         search_result.push_back(result[i].line_content);
