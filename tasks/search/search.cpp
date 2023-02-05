@@ -74,7 +74,9 @@ std::vector<std::string_view> Search(std::string_view text, std::string_view que
     const auto tokenized_by_lines{Tokenize(text, iscntrl)};
     auto idf{GenerateIDF(tokenized_by_lines, query_words)};
     auto interesting_lines{GetInterestingLines(tokenized_by_lines, tokenized_query)};
-    if(interesting_lines.empty()) return {}; //there are no lines with positive TF_IDF
+    if (interesting_lines.empty()){//there are no lines with positive TF_IDF
+        return {};
+    }
     std::unordered_map<std::string_view, long double> tf_idf_per_line;
     tf_idf_per_line.reserve(interesting_lines.size());
     for (auto line : interesting_lines) {
