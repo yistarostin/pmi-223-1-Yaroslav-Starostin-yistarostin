@@ -6,7 +6,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
-template <typename F> requires std::invocable<F&, int> std::vector<std::string_view> Tokenize(std::string_view str, F fn) {
+template <typename F>
+std::vector<std::string_view> Tokenize(std::string_view str, F fn) {
     std::vector<std::string_view> splitted_str;
     auto l = str.begin();
     for (auto r = str.begin(); r != str.end(); ++r) {
