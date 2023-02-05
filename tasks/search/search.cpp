@@ -100,7 +100,9 @@ std::vector<std::string_view> Search(std::string_view text, std::string_view que
             auto tf = GetLineTF(line, word);
             s += reverse_idf * tf;
         }
-        result.push_back(LineMetric{.metrics_value = s, .indexInOriginalText = index, .line_content = line});
+        if (s > 0) {
+            result.push_back(LineMetric{.metrics_value = s, .indexInOriginalText = index, .line_content = line});
+        }
     }
     std::sort(result.begin(), result.end());
     std::vector<std::string_view> search_result;
