@@ -151,9 +151,10 @@ std::vector<std::string_view> Search(std::string_view text, std::string_view que
         }
     }
     std::stable_sort(result.begin(), result.end());
-    std::vector<std::string_view> search_result;
-    for (size_t i = 0; i < std::min<size_t>(results_count, result.size()); ++i) {
-        search_result.push_back(result[i].line_content);
+    size_t result_length{std::min<size_t>(results_count, result.size())};
+    std::vector<std::string_view> search_result(result_length);
+    for (size_t i = 0; i < result_length; ++i) {
+        search_result[i] = result[i].line_content;
     }
     return search_result;
 }
