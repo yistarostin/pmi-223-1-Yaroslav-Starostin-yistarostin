@@ -32,14 +32,8 @@ bool CheckStringsEqualityIgnoringCase(std::string_view a, std::string_view b) {
         return false;
     }
     for (size_t i = 0; i < a.size(); ++i) {
-        if (std::isalpha(a[i])) {
-            if (!(std::isalpha(b[i]) && std::tolower(a[i]) == std::tolower(b[i]))) {
-                return false;
-            }
-        } else {
-            if (a[i] != b[i]) {
-                return false;
-            }
+        if(std::tolower(a[i]) != std::tolower(b[i])){
+            return false;
         }
     }
     return true;
