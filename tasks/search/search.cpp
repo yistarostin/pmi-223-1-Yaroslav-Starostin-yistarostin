@@ -121,13 +121,14 @@ std::vector<std::string_view> Search(std::string_view text, std::string_view que
     auto tokenized_query{TokenizeToWords(query)};
     std::sort(tokenized_query.begin(), tokenized_query.end());
     tokenized_query.erase(std::unique(tokenized_query.begin(), tokenized_query.end()), tokenized_query.end());
-    std::vector<std::string> qq(tokenized_query.size());
+    std::vector<std::string> lowered_query(tokenized_query.size());
     for (size_t i = 0; i < tokenized_query.size(); ++i) {
-        std::transform(tokenized_query[i].begin(), tokenized_query[i].end(), std::back_inserter(qq[i]), ::tolower);
+        std::transform(tokenized_query[i].begin(), tokenized_query[i].end(), std::back_inserter(lowered_query[i]),
+                       ::tolower);
     }
     std::unordered_set<std::string_view> query_words;
-    for (const std::string& kek : qq) {
-        query_words.insert(std::string_view{kek.begin(), kek.end()});
+    for (const std::string& normalized_query_item : lowered_query) {
+        query_words.insert(std::string_view{normalized_query_item.begin(), normalized_query_item.end()});
     }
     const auto tokenized_by_lines{Tokenize(text, iscntrl)};
     auto idf{GenerateIDF(tokenized_by_lines, query_words)};
