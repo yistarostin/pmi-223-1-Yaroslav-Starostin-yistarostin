@@ -64,7 +64,7 @@ std::unordered_map<std::string_view, size_t> GenerateIDF(const std::vector<std::
                                                          const std::unordered_set<std::string_view>& query_words) {
     std::unordered_map<std::string_view, size_t> idf;  // word -> IDF(word)
     for (std::string_view line : tokenized_by_lines) {
-        std::unordered_set<std::string> in_current_line;  // TODO: put strings in lower case
+        std::unordered_set<std::string> in_current_line;
         for (std::string_view word : TokenizeToWords(line)) {
             if (std::any_of(query_words.begin(), query_words.end(),
                             [word](std::string_view token) { return CheckStringsEqualityIgnoringCase(word, token); })) {
