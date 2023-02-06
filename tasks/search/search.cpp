@@ -91,15 +91,16 @@ std::unordered_map<std::string_view, size_t> GenerateIDF(const std::vector<std::
 auto GetInterestingLines(const std::vector<std::string_view>& tokenized_by_lines,
                          const std::unordered_set<std::string_view>& words_bag) {
     std::vector<std::pair<std::string_view, size_t>> interesting_lines;
-    for (size_t i = 0; std::string_view line : tokenized_by_lines) {
+    for (size_t line_index_in_text = 0; std::string_view line : tokenized_by_lines) {
         auto tokenized_line = TokenizeToWords(line);
         if (std::any_of(tokenized_line.begin(), tokenized_line.end(), [&words_bag](std::string_view word) {
                 return std::any_of(words_bag.begin(), words_bag.end(), [word](std::string_view token) {
                     return CheckStringsEqualityIgnoringCase(token, word); /*words_bag.contains(word);*/
                 });
             })) {
-            interesting_lines.emplace_back(line, i++);  // TODO: what if 2 lines and be equal ??? 😡😡
+            interesting_lines.emplace_back(line, line_index_in_text);
         }
+        ++line_index_in_text;
     }
     return interesting_lines;
 }
