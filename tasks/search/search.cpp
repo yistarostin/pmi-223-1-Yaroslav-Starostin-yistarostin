@@ -50,6 +50,10 @@ struct LineMetric {
     size_t indexInOriginalText;
     std::string_view line_content;
 
+    LineMetric(long double mv, size_t index, std::string_view line)
+        : metrics_value(mv), indexInOriginalText(index), line_content(line) {
+    }
+
     auto operator<(const LineMetric& other) const {
         if (metrics_value != other.metrics_value) {
             return metrics_value > other.metrics_value;
@@ -74,9 +78,7 @@ std::unordered_map<std::string_view, size_t> GenerateIDF(const std::vector<std::
                         return CheckStringsEqualityIgnoringCase(word, token);
                     })) {
                     std::string copy;
-                    for (char c : word) {
-                        copy.push_back(static_cast<char>(tolower(c)));
-                    }
+                    std::transform(word.begin(), word.end(), std::back_inserter(copy), ::tolower);
                     in_current_line.insert(copy);
                     ++idf[word];
                 }
@@ -144,7 +146,7 @@ std::vector<std::string_view> Search(std::string_view text, std::string_view que
             s += reverse_idf * tf;
         }
         if (s > 0) {
-            result.push_back(LineMetric{.metrics_value = s, .indexInOriginalText = index, .line_content = line});
+            result.emplace_back(s, index, line);
         }
     }
     std::stable_sort(result.begin(), result.end());
