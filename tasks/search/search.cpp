@@ -27,7 +27,7 @@ std::vector<std::string_view> Tokenize(std::string_view str, F fn) {
     return splitted_str;
 }
 
-bool CompareStringIgnoringCase(std::string_view a, std::string_view b) {
+bool CheckStringsEqualityIgnoringCase(std::string_view a, std::string_view b) {
     if (a.size() != b.size()) {
         return false;
     }
@@ -58,16 +58,21 @@ struct LineMetric {
     }
 };
 
+auto TokenizeToWords(std::string_view line) {
+    return Tokenize(line, [](char c) { return !std::isalpha(c); });
+}
+
 std::unordered_map<std::string_view, size_t> GenerateIDF(const std::vector<std::string_view>& tokenized_by_lines,
                                                          const std::unordered_set<std::string_view>& query_words) {
     std::unordered_map<std::string_view, size_t> idf;  // word -> IDF(word)
     for (std::string_view line : tokenized_by_lines) {
         std::unordered_set<std::string> in_current_line;  // TODO: put strings in lower case
-        for (std::string_view word : Tokenize(line, [](char c) { return !std::isalpha(c); })) {
+        for (std::string_view word : TokenizeToWords(line)) {
             if (std::any_of(query_words.begin(), query_words.end(),
-                            [word](std::string_view token) { return CompareStringIgnoringCase(word, token); })) {
-                if (!std::any_of(in_current_line.begin(), in_current_line.end(),
-                                 [word](std::string_view token) { return CompareStringIgnoringCase(word, token); })) {
+                            [word](std::string_view token) { return CheckStringsEqualityIgnoringCase(word, token); })) {
+                if (!std::any_of(in_current_line.begin(), in_current_line.end(), [word](std::string_view token) {
+                        return CheckStringsEqualityIgnoringCase(word, token);
+                    })) {
                     std::string copy;
                     for (char c : word) {
                         copy.push_back(static_cast<char>(tolower(c)));
@@ -85,11 +90,10 @@ auto GetInterestingLines(const std::vector<std::string_view>& tokenized_by_lines
                          const std::unordered_set<std::string_view>& words_bag) {
     std::vector<std::pair<std::string_view, size_t>> interesting_lines;
     for (size_t i = 0; std::string_view line : tokenized_by_lines) {
-        auto tokenized_line = Tokenize(line, [](char c) { return !std::isalpha(c); });
+        auto tokenized_line = TokenizeToWords(line);
         if (std::any_of(tokenized_line.begin(), tokenized_line.end(), [&words_bag](std::string_view word) {
                 return std::any_of(words_bag.begin(), words_bag.end(), [word](std::string_view token) {
-                    return CompareStringIgnoringCase(token, word); /*words_bag.contains(word);*/
-                    ;
+                    return CheckStringsEqualityIgnoringCase(token, word); /*words_bag.contains(word);*/
                 });
             })) {
             interesting_lines.emplace_back(line, i++);  // TODO: what if 2 lines and be equal ??? 😡😡
@@ -99,11 +103,11 @@ auto GetInterestingLines(const std::vector<std::string_view>& tokenized_by_lines
 }
 
 long double GetLineTF(std::string_view line, std::string_view target_word) {
-    auto tokenized_line = Tokenize(line, [](char c) { return !std::isalpha(c); });
+    auto tokenized_line = TokenizeToWords(line);
     std::size_t total_words = tokenized_line.size();
     std::size_t matched_words = 0;
     for (std::string_view word : tokenized_line) {
-        if (CompareStringIgnoringCase(word, target_word)) {
+        if (CheckStringsEqualityIgnoringCase(word, target_word)) {
             ++matched_words;
         }
     }
@@ -112,7 +116,7 @@ long double GetLineTF(std::string_view line, std::string_view target_word) {
 
 std::vector<std::string_view> Search(std::string_view text, std::string_view query, size_t results_count) {
     std::unordered_map<std::string_view, size_t> words_count;  // word -> text.count(word)
-    auto tokenized_query{Tokenize(query, [](char c) { return !std::isalpha(c); })};
+    auto tokenized_query{TokenizeToWords(query)};
     std::sort(tokenized_query.begin(), tokenized_query.end());
     tokenized_query.erase(std::unique(tokenized_query.begin(), tokenized_query.end()), tokenized_query.end());
     std::vector<std::string> qq(tokenized_query.size());
