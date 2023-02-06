@@ -141,7 +141,7 @@ std::vector<std::string_view> Search(std::string_view text, std::string_view que
         long double s = 0;
         for (std::string_view word : query_words) {
             auto word_idf = static_cast<long double>(idf[word]) / static_cast<long double>(tokenized_by_lines.size());
-            auto reverse_idf = idf[word] == 0 ? 0 : std::log(1 / word_idf);
+            auto reverse_idf = idf[word] == 0 ? 0 : -std::log(word_idf);
             auto tf = GetLineTF(line, word);
             s += reverse_idf * tf;
         }
