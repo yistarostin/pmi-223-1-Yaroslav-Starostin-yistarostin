@@ -133,13 +133,13 @@ std::vector<std::string_view> Search(std::string_view text, std::string_view que
     }
     const auto tokenized_by_lines{Tokenize(text, iscntrl)};
     auto idf{GenerateIDF(tokenized_by_lines, query_words)};
-    auto interesting_lines{GetInterestingLines(tokenized_by_lines, query_words)};
-    if (interesting_lines.empty()) {  // there are no lines with positive TF_IDF
+    auto lines_containing_query_words{GetInterestingLines(tokenized_by_lines, query_words)};
+    if (lines_containing_query_words.empty()) {  // there are no lines with positive TF_IDF
         return {};
     }
-    std::vector<LineMetric> result;
-    result.reserve(interesting_lines.size());
-    for (auto [line, index] : interesting_lines) {
+    std::vector<LineMetric> lines_matching_query;
+    lines_matching_query.reserve(lines_containing_query_words.size());
+    for (auto [line, index] : lines_containing_query_words) {
         long double s = 0;
         for (std::string_view word : query_words) {
             auto word_idf = static_cast<long double>(idf[word]) / static_cast<long double>(tokenized_by_lines.size());
@@ -148,14 +148,14 @@ std::vector<std::string_view> Search(std::string_view text, std::string_view que
             s += reverse_idf * tf;
         }
         if (s > 0) {
-            result.emplace_back(s, index, line);
+            lines_matching_query.emplace_back(s, index, line);
         }
     }
-    std::stable_sort(result.begin(), result.end());
-    size_t result_length{std::min<size_t>(results_count, result.size())};
+    std::stable_sort(lines_matching_query.begin(), lines_matching_query.end());
+    size_t result_length{std::min<size_t>(results_count, lines_matching_query.size())};
     std::vector<std::string_view> search_result(result_length);
     for (size_t i = 0; i < result_length; ++i) {
-        search_result[i] = result[i].line_content;
+        search_result[i] = lines_matching_query[i].line_content;
     }
     return search_result;
 }
