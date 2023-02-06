@@ -113,7 +113,7 @@ long double GetLineTF(std::string_view line, std::string_view target_word) {
             ++matched_words;
         }
     }
-    return static_cast<double>(matched_words) / static_cast<double>(total_words);
+    return static_cast<long double>(matched_words) / static_cast<long double>(total_words);
 }
 
 std::vector<std::string_view> Search(std::string_view text, std::string_view query, size_t results_count) {
