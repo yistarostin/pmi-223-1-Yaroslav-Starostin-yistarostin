@@ -1,3 +1,16 @@
+- group:    03-homework-three
+  start:    15-02-2023 00:00
+  deadline: 01-03-2023 23:59
+  tasks:
+    - task: mines
+      score: 200
+    - task: scorer2
+      score: 100
+    - task: search2
+      score: 100
+    - task: unixpath2
+      score: 100
+
 - group:    02-homework-two
   start:    01-02-2023 00:00
   deadline: 15-02-2023 23:59
