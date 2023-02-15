@@ -20,5 +20,5 @@ if [ "$#" -eq 2 ]; then
     CLANG_PATH=../../run-clang-format.py
 fi
 
-$CLANG_PATH -r "$TASK_PATH" && find "$TASK_PATH" -type f -name '*.cpp' | xargs clang-tidy-11
+$CLANG_PATH -r "$TASK_PATH" && find "$TASK_PATH" -type f -name '*.cpp' -not -name 'test.cpp' | xargs clang-tidy-14
 

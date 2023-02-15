@@ -1,4 +1,4 @@
-FROM cr.yandex/crpkun66rq02t8mpkpa4/cpp-course-build:latest
+FROM cr.yandex/crpkun66rq02t8mpkpa4/cpp-course-build-14:latest
 
 COPY . /opt/shad
 
