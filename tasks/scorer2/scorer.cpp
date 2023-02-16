@@ -31,11 +31,12 @@ void Scorer::OnMergeRequestClosed(const StudentName &student_name, const TaskNam
     // Поскольку каждое обращения opened_merge_requests_count_[student_name].[...] весит большую константу, выполним его
     // 1 раз и далее будем использовать итератор на него
     auto merge_requests_it = opened_merge_requests_count_.find(student_name);
-    // check that merge_requests_it != opened_merge_requsts_count_.end();
-    auto task_it = merge_requests_it->second.find(task_name);
-    --task_it->second;
-    if (task_it->second == 0) {
-        merge_requests_it->second.erase(task_it);
+    if(merge_requests_it != opened_merge_requests_count_.end()){
+        auto task_it = merge_requests_it->second.find(task_name);
+        --task_it->second;
+        if (task_it->second == 0) {
+            merge_requests_it->second.erase(task_it);
+        }
     }
 }
 
