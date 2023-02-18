@@ -37,8 +37,8 @@ std::vector<std::string_view> Tokenize(std::string_view str, std::function<bool(
 
 bool operator<(std::string_view a, std::string_view b) {
     for (std::size_t i = 0; i < std::min<size_t>(a.size(), b.size()); ++i) {
-        if (std::isalpha(a[i]) != std::isalpha(b[i])) {
-            return std::isalpha(a[i]) < std::isalpha(b[i]);
+        if (std::tolower(a[i]) != std::tolower(b[i])) {
+            return std::tolower(a[i]) < std::tolower(b[i]);
         }
     }
     return a.size() < b.size();
