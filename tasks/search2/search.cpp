@@ -36,9 +36,15 @@ std::vector<std::string_view> Tokenize(std::string_view str, std::function<bool(
 }
 
 bool operator<(std::string_view a, std::string_view b) {
-    auto [left_It, right_It] = std::mismatch(a.begin(), a.end(), b.begin(), b.end(),
-                                             [](char a, char b) { return std::tolower(a) == std::tolower(b); });
-    return right_It != b.end() && (left_It == a.end() || (*left_It < *right_It));
+    for (std::size_t i = 0; i < std::min<size_t>(a.size(), b.size()); ++i) {
+        if (std::isalpha(a[i]) != std::isalpha(b[i])) {
+            return std::isalpha(a[i]) < std::isalpha(b[i]);
+        }
+    }
+    return a.size() < b.size();
+    // auto [left_It, right_It] = std::mismatch(a.begin(), a.end(), b.begin(), b.end(),
+    // [](char a, char b) { return std::tolower(a) == std::tolower(b); });
+    // return right_It != b.end() && (left_It == a.end() || (*left_It < *right_It));
 }
 
 bool operator==(std::string_view a, std::string_view b) {
