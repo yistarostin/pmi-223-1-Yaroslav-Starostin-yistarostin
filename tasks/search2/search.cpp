@@ -48,6 +48,9 @@ bool operator<(std::string_view a, std::string_view b) {
 }
 
 bool operator==(std::string_view a, std::string_view b) {
+    if (a.size() != b.size()) {
+        return false;
+    }
     return std::equal(a.begin(), a.end(), b.begin(), b.end(),
                       [](char a, char b) { return std::tolower(a) == std::tolower(b); });
 }
