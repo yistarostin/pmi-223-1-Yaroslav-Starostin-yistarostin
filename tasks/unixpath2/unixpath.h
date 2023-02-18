@@ -11,7 +11,7 @@ class UnixPath {
     bool is_cache_valid_;
     std::string cache_;
 public:
-    UnixPath(std::string_view initial_dir);
+    explicit UnixPath(std::string_view initial_dir);
 
     void ChangeDirectory(std::string_view path);
 
