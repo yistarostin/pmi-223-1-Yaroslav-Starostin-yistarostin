@@ -60,10 +60,10 @@ auto TokenizeToWords(std::string_view line) {
 }
 
 InsensitiveHashMap GenerateIDF(const std::vector<std::vector<std::string_view>>& tokenized_by_words,
-                               const std::unordered_set<std::string_view>& query_words) {
+                               const InsensitiveHashSet& query_words) {
     InsensitiveHashMap idf;  // word -> IDF(word)
     for (const std::vector<std::string_view>& line : tokenized_by_words) {
-        std::unordered_set<std::string_view> in_current_line;
+        InsensitiveHashSet in_current_line;
         for (std::string_view word : line) {
             if (query_words.count(word)) {
                 if (in_current_line.count(word) == 0) {
@@ -92,7 +92,7 @@ struct LineMetric {
 };
 
 auto GetInterestingLines(const std::vector<std::vector<std::string_view>>& tokenized_by_words,
-                         const std::unordered_set<std::string_view>& words_bag) {
+                         const InsensitiveHashSet& words_bag) {
     std::vector<size_t> interesting_lines;
     for (size_t line_index_in_text = 0; const std::vector<std::string_view>& line : tokenized_by_words) {
         // If line has at least 1 word from query
@@ -112,7 +112,7 @@ void SearchEngine::BuildIndex(std::string_view text) {
     for (auto line : tokenized_by_lines_) {
         tokenized_by_words_.push_back(TokenizeToWords(line));
     }
-    std::unordered_set<std::string_view> query;
+    InsensitiveHashSet query;
     for (const auto& line : tokenized_by_words_) {
         for (const auto& word : line) {
             query.insert(word);
@@ -132,7 +132,7 @@ std::vector<std::string_view> SearchEngine::Search(std::string_view query, size_
         return {};
     }
     std::vector<std::string_view> tokenized_query{TokenizeToWords(query)};
-    std::unordered_set<std::string_view> words_bag{tokenized_query.begin(), tokenized_query.end()};
+    InsensitiveHashSet words_bag{tokenized_query.begin(), tokenized_query.end()};
     tokenized_query.erase(std::unique(tokenized_query.begin(), tokenized_query.end()), tokenized_query.end());
     auto lines_containing_query_words{GetInterestingLines(tokenized_by_words_, words_bag)};
     if (lines_containing_query_words.empty()) {
