@@ -1,8 +1,8 @@
 #pragma once
 
+#include <stack>
 #include <string>
 #include <string_view>
-#include <stack>
 #include <vector>
 
 class UnixPath {
@@ -11,6 +11,7 @@ class UnixPath {
     bool is_cache_valid_;
     std::string cache_;
     const std::vector<std::string> absolute_to_initial_;
+
 public:
     explicit UnixPath(std::string_view initial_dir);
 
