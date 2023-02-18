@@ -10,6 +10,7 @@ class UnixPath {
     std::vector<std::string> current_location_;
     bool is_cache_valid_;
     std::string cache_;
+    const std::vector<std::string> absolute_to_initial_;
 public:
     explicit UnixPath(std::string_view initial_dir);
 
