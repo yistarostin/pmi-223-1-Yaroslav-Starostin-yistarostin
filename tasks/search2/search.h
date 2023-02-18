@@ -11,9 +11,9 @@ struct InsensitivePolynomialHash {
 using InsensitiveHashMap = std::unordered_map<std::string_view, std::size_t, InsensitivePolynomialHash>;
 
 class SearchEngine {
-    std::unordered_map<std::string_view, std::size_t, InsensitivePolynomialHash> idf_values;
-    std::vector<std::vector<std::string_view>> tokenized_by_words;
-    std::vector<std::string_view> tokenized_by_lines;
+    std::unordered_map<std::string_view, std::size_t, InsensitivePolynomialHash> idf_values_;
+    std::vector<std::vector<std::string_view>> tokenized_by_words_;
+    std::vector<std::string_view> tokenized_by_lines_;
 
 public:
     void BuildIndex(std::string_view text);

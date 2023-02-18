@@ -96,17 +96,17 @@ auto GetInterestingLines(const std::vector<std::vector<std::string_view>>& token
 }
 
 void SearchEngine::BuildIndex(std::string_view text) {
-    tokenized_by_lines = Tokenize(text, [](char c) { return iscntrl(c); });
-    for (auto line : tokenized_by_lines) {
-        tokenized_by_words.push_back(TokenizeToWords(line));
+    tokenized_by_lines_ = Tokenize(text, [](char c) { return iscntrl(c); });
+    for (auto line : tokenized_by_lines_) {
+        tokenized_by_words_.push_back(TokenizeToWords(line));
     }
     std::unordered_set<std::string_view> query;
-    for (const auto& line : tokenized_by_words) {
+    for (const auto& line : tokenized_by_words_) {
         for (const auto& word : line) {
             query.insert(word);
         }
     }
-    idf_values = GenerateIDF(tokenized_by_words, query);
+    idf_values_ = GenerateIDF(tokenized_by_words_, query);
 }
 
 long double GetLineTF(std::vector<std::string_view> line, std::string_view target_word) {
@@ -116,13 +116,13 @@ long double GetLineTF(std::vector<std::string_view> line, std::string_view targe
 }
 
 std::vector<std::string_view> SearchEngine::Search(std::string_view query, size_t results_count) const {
-    if (idf_values.empty()) {
+    if (idf_values_.empty()) {
         return {};
     }
     std::vector<std::string_view> tokenized_query{TokenizeToWords(query)};
     std::unordered_set<std::string_view> words_bag{tokenized_query.begin(), tokenized_query.end()};
     tokenized_query.erase(std::unique(tokenized_query.begin(), tokenized_query.end()), tokenized_query.end());
-    auto lines_containing_query_words{GetInterestingLines(tokenized_by_words, words_bag)};
+    auto lines_containing_query_words{GetInterestingLines(tokenized_by_words_, words_bag)};
     if (lines_containing_query_words.empty()) {
         return {};
     }
@@ -130,12 +130,12 @@ std::vector<std::string_view> SearchEngine::Search(std::string_view query, size_
     std::vector<LineMetric> lines_matching_query;
     lines_matching_query.reserve(lines_containing_query_words.size());
     for (auto index : lines_containing_query_words) {
-        const std::vector<std::string_view>& line = tokenized_by_words[index];
+        const std::vector<std::string_view>& line = tokenized_by_words_[index];
         long double line_metrics_sum = 0;
         for (std::string_view word : words_bag) {
             auto word_idf =
-                static_cast<long double>(idf_values.at(word)) / static_cast<long double>(tokenized_by_words.size());
-            auto reverse_idf = idf_values.at(word) == 0 ? 0 : -std::log(word_idf);
+                static_cast<long double>(idf_values_.at(word)) / static_cast<long double>(tokenized_by_words_.size());
+            auto reverse_idf = idf_values_.at(word) == 0 ? 0 : -std::log(word_idf);
             auto tf = GetLineTF(line, word);
             line_metrics_sum += reverse_idf * tf;
         }
@@ -147,7 +147,7 @@ std::vector<std::string_view> SearchEngine::Search(std::string_view query, size_
     size_t result_length{std::min<size_t>(results_count, lines_matching_query.size())};
     std::vector<std::string_view> search_result(result_length);
     for (size_t i = 0; i < result_length; ++i) {
-        search_result[i] = tokenized_by_lines[lines_matching_query[i].indexInOriginalText];
+        search_result[i] = tokenized_by_lines_[lines_matching_query[i].indexInOriginalText];
     }
     return search_result;
 }
