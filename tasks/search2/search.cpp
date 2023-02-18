@@ -4,7 +4,6 @@
 #include <cctype>
 #include <cmath>
 #include <functional>
-#include <ranges>
 #include <string_view>
 #include <unordered_set>
 
@@ -98,8 +97,8 @@ auto GetInterestingLines(const std::vector<std::vector<std::string_view>>& token
 
 void SearchEngine::BuildIndex(std::string_view text) {
     tokenized_by_lines = Tokenize(text, [](char c) { return iscntrl(c); });
-    for (auto line : tokenized_by_lines | std::ranges::views::transform(TokenizeToWords)) {
-        tokenized_by_words.push_back(line);
+    for (auto line : tokenized_by_lines) {
+        tokenized_by_words.push_back(TokenizeToWords(line));
     }
     std::unordered_set<std::string_view> query;
     for (const auto& line : tokenized_by_words) {
