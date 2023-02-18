@@ -48,7 +48,8 @@ bool operator<(std::string_view a, std::string_view b) {
 }
 
 bool operator==(std::string_view a, std::string_view b) {
-    return std::equal(a.begin(), a.end(), b.begin(), b.end(), [](char a, char b) { return std::tolower(a) == std::tolower(b); });
+    return std::equal(a.begin(), a.end(), b.begin(), b.end(),
+                      [](char a, char b) { return std::tolower(a) == std::tolower(b); });
 }
 
 auto TokenizeToWords(std::string_view line) {
@@ -141,8 +142,8 @@ std::vector<std::string_view> SearchEngine::Search(std::string_view query, size_
         const std::vector<std::string_view>& line = tokenized_by_words_[index];
         long double line_metrics_sum = 0;
         for (std::string_view word : words_bag) {
-            auto word_idf =
-                static_cast<long double>(idf_values_.contains(word) ? idf_values_.at(word) : 0) / static_cast<long double>(tokenized_by_lines_.size());
+            auto word_idf = static_cast<long double>(idf_values_.contains(word) ? idf_values_.at(word) : 0) /
+                            static_cast<long double>(tokenized_by_lines_.size());
             auto reverse_idf = idf_values_.contains(word) ? -std::log(word_idf) : 0;
             auto tf = GetLineTF(line, word);
             line_metrics_sum += reverse_idf * tf;
