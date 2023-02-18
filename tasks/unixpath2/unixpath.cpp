@@ -4,6 +4,8 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <iterator>
+#include <ranges>
 
 constexpr const char UnixDelimiter = '/';
 constexpr const char* const GotoPrevDirectory = "..";
@@ -54,6 +56,9 @@ std::string UnixPath::GetAbsolutePath() const {
 }
 
 void UnixPath::ChangeDirectory(std::string_view path) {
+    if(!path.empty() && path[0] == '/'){
+        current_location_.clear();
+    }
     for (const auto& word : Split(path, UnixDelimiter)) {
         std::string_view now{word.begin(), word.end()};
         if (now == GotoPrevDirectory) {
@@ -66,17 +71,16 @@ void UnixPath::ChangeDirectory(std::string_view path) {
     }
 }
 
-std::string UnixPath::GetRelativePath()
-    const {  // O(n^2) for now, should be n log n (just use binary search) or somehow even linear
+std::string UnixPath::GetRelativePath() const {
     std::vector<std::string> relative_path;
-    auto initial_dir_it = absolute_to_initial_.end();
-    while (!std::equal(absolute_to_initial_.begin(), initial_dir_it,
-                       current_location_.begin())) {  // FIXME: compare path prefixes of same length
-        --initial_dir_it;
+    auto first_path_mismatch = std::mismatch(current_location_.begin(), current_location_.end(),
+                                             absolute_to_initial_.begin(), absolute_to_initial_.end());
+    std::ptrdiff_t have_walked = first_path_mismatch.second - absolute_to_initial_.begin();
+
+    for (ptrdiff_t i = 0; std::next(absolute_to_initial_.begin(), have_walked + i) != absolute_to_initial_.end(); ++i) {
         relative_path.push_back(GotoPrevDirectory);
     }
-    std::ptrdiff_t have_walked = initial_dir_it - absolute_to_initial_.begin();
-    std::copy(current_location_.begin() + have_walked, current_location_.end(),
+    std::copy(std::next(current_location_.begin(), have_walked), current_location_.end(),
               std::back_inserter(relative_path));  // TODO: I have no idea if this formula works
     return ConstructPath(relative_path);
 }
