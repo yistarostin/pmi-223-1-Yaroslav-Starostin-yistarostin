@@ -97,6 +97,8 @@ auto GetInterestingLines(const std::vector<std::vector<std::string_view>>& token
 
 void SearchEngine::BuildIndex(std::string_view text) {
     tokenized_by_lines_ = Tokenize(text, [](char c) { return iscntrl(c); });
+    tokenized_by_words_.clear();
+    tokenized_by_words_.reserve(tokenized_by_lines_.size());
     for (auto line : tokenized_by_lines_) {
         tokenized_by_words_.push_back(TokenizeToWords(line));
     }
