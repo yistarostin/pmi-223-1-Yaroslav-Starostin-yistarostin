@@ -87,13 +87,13 @@ struct LineMetric {
     }
 };
 
-auto GetInterestingLines(const std::vector<std::vector<std::string_view>>& tokenized_by_lines,
+auto GetInterestingLines(const std::vector<std::vector<std::string_view>>& tokenized_by_words,
                          const std::unordered_set<std::string_view>& words_bag) {
     std::vector<size_t> interesting_lines;
-    for (size_t line_index_in_text = 0; const std::vector<std::string_view>& line : tokenized_by_lines) {
+    for (size_t line_index_in_text = 0; const std::vector<std::string_view>& line : tokenized_by_words) {
         // If line has at least 1 word from query
         if (std::any_of(line.begin(), line.end(),
-                        [&words_bag](std::string_view word) { return words_bag.count(word); })) {
+                        [&words_bag](std::string_view word) { return words_bag.contains(word); })) {
             interesting_lines.push_back(line_index_in_text);
         }
         ++line_index_in_text;
@@ -143,7 +143,7 @@ std::vector<std::string_view> SearchEngine::Search(std::string_view query, size_
         for (std::string_view word : words_bag) {
             auto word_idf =
                 static_cast<long double>(idf_values_.at(word)) / static_cast<long double>(tokenized_by_lines_.size());
-            auto reverse_idf = idf_values_.at(word) == 0 ? 0 : -std::log(word_idf);
+            auto reverse_idf = word_idf == 0 ? 0 : -std::log(word_idf);
             auto tf = GetLineTF(line, word);
             line_metrics_sum += reverse_idf * tf;
         }
