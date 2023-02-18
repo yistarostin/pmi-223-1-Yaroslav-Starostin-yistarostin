@@ -117,7 +117,7 @@ void SearchEngine::BuildIndex(std::string_view text) {
     idf_values_ = GenerateIDF(tokenized_by_words_, query);
 }
 
-long double GetLineTF(std::vector<std::string_view> line, std::string_view target_word) {
+long double GetLineTF(const std::vector<std::string_view>& line, std::string_view target_word) {
     std::size_t total_words = line.size();
     std::size_t matched_words = std::count(line.begin(), line.end(), target_word);
     return static_cast<long double>(matched_words) / static_cast<long double>(total_words);
@@ -142,7 +142,7 @@ std::vector<std::string_view> SearchEngine::Search(std::string_view query, size_
         long double line_metrics_sum = 0;
         for (std::string_view word : words_bag) {
             auto word_idf =
-                static_cast<long double>(idf_values_.at(word)) / static_cast<long double>(tokenized_by_words_.size());
+                static_cast<long double>(idf_values_.at(word)) / static_cast<long double>(tokenized_by_lines_.size());
             auto reverse_idf = idf_values_.at(word) == 0 ? 0 : -std::log(word_idf);
             auto tf = GetLineTF(line, word);
             line_metrics_sum += reverse_idf * tf;
