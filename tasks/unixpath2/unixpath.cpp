@@ -1,18 +1,14 @@
 #include "unixpath.h"
 
-#include <endian.h>
-
 #include <algorithm>
 #include <cstddef>
-#include <iterator>
-#include <ranges>
 
 constexpr const char UnixDelimiter = '/';
 constexpr const char* const GotoPrevDirectory = "..";
 constexpr const char* const GotoCurrDirectory = ".";
 
-std::vector<std::string_view> Split(std::string_view str, char delimeter) {
-    std::vector<std::string_view> splitted_str;
+std::vector<std::string> Split(std::string_view str, char delimeter) {
+    std::vector<std::string> splitted_str;
     auto l = str.begin();
     for (auto r = str.begin(); r != str.end(); ++r) {
         if (*r == delimeter) {
@@ -28,8 +24,9 @@ std::vector<std::string_view> Split(std::string_view str, char delimeter) {
     return splitted_str;
 }
 
-std::string ConstructPath(const std::vector<std::string>& parsed_path) {  // I might want to use std::string_view
-                                                                          // instead of string, but not a big deal
+std::string ConstructPath(const std::vector<std::string>& parsed_path,
+                          bool absolute = true) {  // I might want to use std::string_view
+                                                   // instead of string, but not a big deal
     std::string path_to_current;
     for (const auto& directory : parsed_path) {
         path_to_current += UnixDelimiter;
@@ -38,25 +35,22 @@ std::string ConstructPath(const std::vector<std::string>& parsed_path) {  // I m
     if (path_to_current.empty()) {
         path_to_current += UnixDelimiter;
     }
-    return path_to_current;
+    return {std::next(path_to_current.begin(), (absolute ? 0 : 1)), path_to_current.end()};
 }
 
 UnixPath::UnixPath(std::string_view initial_dir)
-    : initial_dir_(initial_dir.begin(), initial_dir.end()), current_location_() {
+    : initial_dir_(initial_dir.begin(), initial_dir.end()),
+      current_location_(),
+      absolute_to_initial_(Split(initial_dir, UnixDelimiter)) {
     ChangeDirectory(initial_dir_);
 }
 
 std::string UnixPath::GetAbsolutePath() const {
-    // TODO: use caching
-    //       we actually can't mark this method const if we wonna save cache
-    //       so we either need to get rid of const, to calculate hash just after the changing the directory or just not
-    //       to use cache
-    //
     return ConstructPath(current_location_);
 }
 
 void UnixPath::ChangeDirectory(std::string_view path) {
-    if(!path.empty() && path[0] == '/'){
+    if (!path.empty() && path[0] == UnixDelimiter) {
         current_location_.clear();
     }
     for (const auto& word : Split(path, UnixDelimiter)) {
@@ -77,10 +71,14 @@ std::string UnixPath::GetRelativePath() const {
                                              absolute_to_initial_.begin(), absolute_to_initial_.end());
     std::ptrdiff_t have_walked = first_path_mismatch.second - absolute_to_initial_.begin();
 
-    for (ptrdiff_t i = 0; std::next(absolute_to_initial_.begin(), have_walked + i) != absolute_to_initial_.end(); ++i) {
+    for (std::ptrdiff_t i = 0; std::next(absolute_to_initial_.begin(), have_walked + i) != absolute_to_initial_.end();
+         ++i) {  // just N times add ".." to relative_path
         relative_path.push_back(GotoPrevDirectory);
     }
+    if (relative_path.empty()) {
+        relative_path.push_back(GotoCurrDirectory);
+    }
     std::copy(std::next(current_location_.begin(), have_walked), current_location_.end(),
-              std::back_inserter(relative_path));  // TODO: I have no idea if this formula works
-    return ConstructPath(relative_path);
+              std::back_inserter(relative_path));
+    return ConstructPath(relative_path, false);
 }
