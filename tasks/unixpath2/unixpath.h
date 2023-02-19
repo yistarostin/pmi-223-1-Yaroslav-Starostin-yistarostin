@@ -1,11 +1,19 @@
 #pragma once
 
+#include <stack>
 #include <string>
 #include <string_view>
+#include <vector>
 
 class UnixPath {
+    std::string initial_dir_;
+    std::vector<std::string> current_location_;
+    bool is_cache_valid_;
+    std::string cache_;
+    const std::vector<std::string> absolute_to_initial_;
+
 public:
-    UnixPath(std::string_view initial_dir);
+    explicit UnixPath(std::string_view initial_dir);
 
     void ChangeDirectory(std::string_view path);
 
