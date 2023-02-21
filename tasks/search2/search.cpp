@@ -128,7 +128,7 @@ long double GetLineTF(const std::vector<std::string_view>& line, std::string_vie
 }
 
 std::vector<std::string_view> SearchEngine::Search(std::string_view query, size_t results_count) const {
-    if(!IndexExists){
+    if (!IndexExists) {
         return {};
     }
     std::vector<std::string_view> tokenized_query{TokenizeToWords(query)};
