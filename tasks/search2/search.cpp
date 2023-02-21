@@ -108,6 +108,7 @@ auto GetInterestingLines(const std::vector<std::vector<std::string_view>>& token
 void SearchEngine::BuildIndex(std::string_view text) {
     tokenized_by_lines_ = Tokenize(text, [](char c) { return iscntrl(c); });
     tokenized_by_words_.clear();
+    IndexExists = true;
     tokenized_by_words_.reserve(tokenized_by_lines_.size());
     for (auto line : tokenized_by_lines_) {
         tokenized_by_words_.push_back(TokenizeToWords(line));
@@ -118,7 +119,6 @@ void SearchEngine::BuildIndex(std::string_view text) {
             query.insert(word);
         }
     }
-    idf_values_ = GenerateIDF(tokenized_by_words_, query);
 }
 
 long double GetLineTF(const std::vector<std::string_view>& line, std::string_view target_word) {
@@ -128,7 +128,7 @@ long double GetLineTF(const std::vector<std::string_view>& line, std::string_vie
 }
 
 std::vector<std::string_view> SearchEngine::Search(std::string_view query, size_t results_count) const {
-    if (idf_values_.empty()) {
+    if(!IndexExists){
         return {};
     }
     std::vector<std::string_view> tokenized_query{TokenizeToWords(query)};
@@ -139,6 +139,7 @@ std::vector<std::string_view> SearchEngine::Search(std::string_view query, size_
         return {};
     }
 
+    auto idf_values_ = GenerateIDF(tokenized_by_words_, words_bag);
     std::vector<LineMetric> lines_matching_query;
     lines_matching_query.reserve(lines_containing_query_words.size());
     for (auto index : lines_containing_query_words) {
