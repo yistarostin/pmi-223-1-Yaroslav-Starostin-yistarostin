@@ -108,7 +108,7 @@ auto GetInterestingLines(const std::vector<std::vector<std::string_view>>& token
 void SearchEngine::BuildIndex(std::string_view text) {
     tokenized_by_lines_ = Tokenize(text, [](char c) { return iscntrl(c); });
     tokenized_by_words_.clear();
-    IndexExists = true;
+    index_exists_= true;
     tokenized_by_words_.reserve(tokenized_by_lines_.size());
     for (auto line : tokenized_by_lines_) {
         tokenized_by_words_.push_back(TokenizeToWords(line));
@@ -128,7 +128,7 @@ long double GetLineTF(const std::vector<std::string_view>& line, std::string_vie
 }
 
 std::vector<std::string_view> SearchEngine::Search(std::string_view query, size_t results_count) const {
-    if (!IndexExists) {
+    if (!index_exists_) {
         return {};
     }
     std::vector<std::string_view> tokenized_query{TokenizeToWords(query)};
