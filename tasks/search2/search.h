@@ -16,7 +16,7 @@ class SearchEngine {
     // std::unordered_map<std::string_view, std::size_t, InsensitivePolynomialHash> idf_values_;
     std::vector<std::vector<std::string_view>> tokenized_by_words_;
     std::vector<std::string_view> tokenized_by_lines_;
-    bool IndexExists;
+    bool index_exists_;
 
 public:
     void BuildIndex(std::string_view text);

@@ -139,16 +139,16 @@ std::vector<std::string_view> SearchEngine::Search(std::string_view query, size_
         return {};
     }
 
-    auto idf_values_ = GenerateIDF(tokenized_by_words_, words_bag);
+    auto idf_values = GenerateIDF(tokenized_by_words_, words_bag);
     std::vector<LineMetric> lines_matching_query;
     lines_matching_query.reserve(lines_containing_query_words.size());
     for (auto index : lines_containing_query_words) {
         const std::vector<std::string_view>& line = tokenized_by_words_[index];
         long double line_metrics_sum = 0;
         for (std::string_view word : words_bag) {
-            auto word_idf = static_cast<long double>(idf_values_.contains(word) ? idf_values_.at(word) : 0) /
+            auto word_idf = static_cast<long double>(idf_values.contains(word) ? idf_values.at(word) : 0) /
                             static_cast<long double>(tokenized_by_lines_.size());
-            auto reverse_idf = idf_values_.contains(word) ? -std::log(word_idf) : 0;
+            auto reverse_idf = idf_values.contains(word) ? -std::log(word_idf) : 0;
             auto tf = GetLineTF(line, word);
             line_metrics_sum += reverse_idf * tf;
         }
