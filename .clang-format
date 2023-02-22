@@ -7,6 +7,4 @@ AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 DerivePointerAlignment: true
 KeepEmptyLinesAtTheStartOfBlocks: true
-SortIncludes: true
-SeparateDefinitionBlocks: Always
-Standard: c++20
+SortIncludes: false
