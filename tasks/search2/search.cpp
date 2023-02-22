@@ -114,11 +114,8 @@ auto GetInterestingLines(const std::vector<std::string_view>& tokenized_by_lines
     std::vector<size_t> interesting_lines;
     for (size_t line_index_in_text = 0; std::string_view line : tokenized_by_lines) {
         auto tokenized_line = TokenizeToWords(line);
-        if (std::any_of(tokenized_line.begin(), tokenized_line.end(), [&words_bag](std::string_view word) {
-                return std::any_of(words_bag.begin(), words_bag.end(), [word](std::string_view token) {
-                    return CheckStringsEqualityIgnoringCase(token, word); /*words_bag.contains(word);*/
-                });
-            })) {
+        if (std::any_of(tokenized_line.begin(), tokenized_line.end(),
+                        [&words_bag](std::string_view word) { return words_bag.count(word); })) {
             interesting_lines.push_back(line_index_in_text);
         }
         ++line_index_in_text;
