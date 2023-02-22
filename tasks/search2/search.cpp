@@ -33,24 +33,6 @@ struct LineMetric {
     }
 };
 
-template <typename F>
-std::vector<std::string_view> Tokenize(std::string_view str, F fn) {
-    std::vector<std::string_view> splitted_str;
-    auto l = str.begin();
-    for (auto r = str.begin(); r != str.end(); ++r) {
-        if (fn(*r)) {
-            if (l != r) {
-                splitted_str.emplace_back(std::string_view{l, r});
-            }
-            l = r + 1;
-        }
-    }
-    if (l != str.end()) {
-        splitted_str.emplace_back(std::string_view{l, str.end()});
-    }
-    return splitted_str;
-}
-
 bool CheckStringsEqualityIgnoringCase(std::string_view a, std::string_view b) {
     if (a.size() != b.size()) {
         return false;
@@ -63,16 +45,40 @@ bool CheckStringsEqualityIgnoringCase(std::string_view a, std::string_view b) {
     return true;
 }
 
-auto TokenizeToWords(std::string_view line) {
-    return Tokenize(line, [](char c) { return !std::isalpha(c); });
-}
+struct Tokenizers {
+    template <typename F>
+    static std::vector<std::string_view> Tokenize(std::string_view str, F fn) {
+        std::vector<std::string_view> splitted_str;
+        auto l = str.begin();
+        for (auto r = str.begin(); r != str.end(); ++r) {
+            if (fn(*r)) {
+                if (l != r) {
+                    splitted_str.emplace_back(std::string_view{l, r});
+                }
+                l = r + 1;
+            }
+        }
+        if (l != str.end()) {
+            splitted_str.emplace_back(std::string_view{l, str.end()});
+        }
+        return splitted_str;
+    }
+
+    static auto TokenizeToWords(std::string_view line) {
+        return Tokenize(line, [](char c) { return !std::isalpha(c); });
+    }
+
+    static auto TokenizeToLines(std::string_view text) {
+        return Tokenize(text, ::iscntrl);
+    }
+};
 
 InsensitiveHashMap GenerateIDF(const std::vector<std::string_view>& tokenized_by_lines,
                                const InsensitiveHashSet& query_words) {
     InsensitiveHashMap idf;  // word -> IDF(word)
     for (std::string_view line : tokenized_by_lines) {
         InsensitiveHashSet in_current_line;
-        for (std::string_view word : TokenizeToWords(line)) {
+        for (std::string_view word : Tokenizers::TokenizeToWords(line)) {
             if (query_words.count(word)) {
                 if (!in_current_line.count(word)) {
                     std::string copy;
@@ -86,7 +92,7 @@ InsensitiveHashMap GenerateIDF(const std::vector<std::string_view>& tokenized_by
     return idf;
 }
 
-long double SearchEngine::GetLineTF(std::vector<std::string_view> line, std::string_view target_word) const {
+long double SearchEngine::GetLineTF(std::vector<std::string_view> line, std::string_view target_word) {
     std::size_t total_words = line.size();
     std::size_t matched_words = 0;
     for (const std::string_view& word : line) {
@@ -98,19 +104,19 @@ long double SearchEngine::GetLineTF(std::vector<std::string_view> line, std::str
 }
 
 void SearchEngine::BuildIndex(std::string_view text) {
-    tokenized_by_lines_ = Tokenize(text, [](char c) -> bool { return iscntrl(c); });
+    tokenized_by_lines_ = Tokenizers::TokenizeToLines(text);
     tokenized_by_words_.clear();
     for (auto line : tokenized_by_lines_) {
-        tokenized_by_words_.emplace_back(TokenizeToWords(line));
+        tokenized_by_words_.emplace_back(Tokenizers::TokenizeToWords(line));
     }
 
     has_index_ = true;
 }
 
-auto GetInterestingLines(const std::vector<std::string_view>& tokenized_by_lines, const InsensitiveHashSet& words_bag) {
+std::vector<size_t> SearchEngine::GetInterestingLines(const InsensitiveHashSet& words_bag) const {
     std::vector<size_t> interesting_lines;
-    for (size_t line_index_in_text = 0; std::string_view line : tokenized_by_lines) {
-        auto tokenized_line = TokenizeToWords(line);
+    for (size_t line_index_in_text = 0; std::string_view line : tokenized_by_lines_) {
+        auto tokenized_line = Tokenizers::TokenizeToWords(line);
         if (std::any_of(tokenized_line.begin(), tokenized_line.end(),
                         [&words_bag](std::string_view word) { return words_bag.count(word); })) {
             interesting_lines.push_back(line_index_in_text);
@@ -125,12 +131,12 @@ std::vector<std::string_view> SearchEngine::Search(std::string_view query, size_
         return {};
     }
     InsensitiveHashMap words_count;  // word -> text.count(word)
-    auto tokenized_query{TokenizeToWords(query)};
+    auto tokenized_query{Tokenizers::TokenizeToWords(query)};
     std::sort(tokenized_query.begin(), tokenized_query.end());
     tokenized_query.erase(std::unique(tokenized_query.begin(), tokenized_query.end()), tokenized_query.end());
     InsensitiveHashSet query_words(tokenized_query.begin(), tokenized_query.end());
     auto idf{GenerateIDF(tokenized_by_lines_, query_words)};
-    auto lines_containing_query_words{GetInterestingLines(tokenized_by_lines_, query_words)};
+    auto lines_containing_query_words{GetInterestingLines(query_words)};
     if (lines_containing_query_words.empty()) {  // there are no lines with positive TF_IDF
         return {};
     }
