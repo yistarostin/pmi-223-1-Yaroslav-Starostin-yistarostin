@@ -3,7 +3,6 @@
 #include <cctype>
 #include <cmath>
 #include <functional>
-#include <ranges>
 #include <string>
 #include <string_view>
 #include <unordered_set>
@@ -105,8 +104,8 @@ long double SearchEngine::GetLineTF(std::vector<std::string_view> line, std::str
 void SearchEngine::BuildIndex(std::string_view text) {
     tokenized_by_lines_ = Tokenize(text, [](char c) -> bool { return iscntrl(c); });
     tokenized_by_words_.clear();
-    for (auto line : tokenized_by_lines_ | std::ranges::views::transform(TokenizeToWords)) {
-        tokenized_by_words_.push_back(line);
+    for (auto line : tokenized_by_lines_) {
+        tokenized_by_words_.emplace_back(TokenizeToWords(line));
     }
 
     has_index_ = true;
