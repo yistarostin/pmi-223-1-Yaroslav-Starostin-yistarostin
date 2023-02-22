@@ -7,17 +7,16 @@
 #include <string_view>
 #include <unordered_set>
 
-// constexpr const size_t HasherBase = 29;  // least prime larger than 26 (|alphabet|)
-//
-// std::size_t InsensitivePolynomialHash::operator()(std::string_view s) const {
-// std::size_t hash{0};
-// for (char c : s) {
-// hash = hash * HasherBase +
-// (std::tolower(c) - 'a' + 1);  // overflow is ok as size_t is used, it just makes x -> x MOD 2**32
-// }
+constexpr const size_t HasherBase = 29;  // least prime larger than 26 (|alphabet|)
 
-// return hash;
-// }
+std::size_t InsensitivePolynomialHash::operator()(std::string_view s) const {
+    std::size_t hash{0};
+    for (char c : s) {
+        hash = hash * HasherBase +
+               (std::tolower(c) - 'a' + 1);  // overflow is ok as size_t is used, it just makes x -> x MOD 2**32
+    }
+    return hash;
+}
 
 struct LineMetric {
     long double metrics_value;
@@ -68,9 +67,9 @@ bool CheckStringsEqualityIgnoringCase(std::string_view a, std::string_view b) {
     return true;
 }
 
-std::unordered_map<std::string_view, size_t> GenerateIDF(const std::vector<std::string_view>& tokenized_by_lines,
-                                                         const std::unordered_set<std::string_view>& query_words) {
-    std::unordered_map<std::string_view, size_t> idf;  // word -> IDF(word)
+InsensitiveHashMap GenerateIDF(const std::vector<std::string_view>& tokenized_by_lines,
+                               const InsensitiveHashSet& query_words) {
+    InsensitiveHashMap idf;  // word -> IDF(word)
     for (std::string_view line : tokenized_by_lines) {
         std::unordered_set<std::string> in_current_line;
         for (std::string_view word : TokenizeToWords(line)) {
@@ -111,8 +110,7 @@ void SearchEngine::BuildIndex(std::string_view text) {
     has_index_ = true;
 }
 
-auto GetInterestingLines(const std::vector<std::string_view>& tokenized_by_lines,
-                         const std::unordered_set<std::string_view>& words_bag) {
+auto GetInterestingLines(const std::vector<std::string_view>& tokenized_by_lines, const InsensitiveHashSet& words_bag) {
     std::vector<size_t> interesting_lines;
     for (size_t line_index_in_text = 0; std::string_view line : tokenized_by_lines) {
         auto tokenized_line = TokenizeToWords(line);
@@ -132,7 +130,7 @@ std::vector<std::string_view> SearchEngine::Search(std::string_view query, size_
     if (!has_index_) {
         return {};
     }
-    std::unordered_map<std::string_view, size_t> words_count;  // word -> text.count(word)
+    InsensitiveHashMap words_count;  // word -> text.count(word)
     auto tokenized_query{TokenizeToWords(query)};
     std::sort(tokenized_query.begin(), tokenized_query.end());
     tokenized_query.erase(std::unique(tokenized_query.begin(), tokenized_query.end()), tokenized_query.end());
@@ -141,7 +139,7 @@ std::vector<std::string_view> SearchEngine::Search(std::string_view query, size_
         std::transform(tokenized_query[i].begin(), tokenized_query[i].end(), std::back_inserter(lowered_query[i]),
                        ::tolower);
     }
-    std::unordered_set<std::string_view> query_words;
+    InsensitiveHashSet query_words;
     for (const std::string& normalized_query_item : lowered_query) {
         query_words.insert(std::string_view{normalized_query_item.begin(), normalized_query_item.end()});
     }
