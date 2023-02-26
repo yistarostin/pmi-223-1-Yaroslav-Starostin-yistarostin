@@ -6,10 +6,15 @@
 #include <numeric>
 #include <queue>
 #include <random>
+#include <tuple>
 using Cell = Minesweeper::Cell;
 
 bool Cell::operator==(const Cell& other) const {
     return x == other.x && y == other.y;
+}
+
+bool Cell::operator<(const Cell& other) const {
+    return std::tie(x, y) < std::tie(other.x, other.y);
 }
 
 std::size_t Cell::CellHash::operator()(const Cell& cell) const {

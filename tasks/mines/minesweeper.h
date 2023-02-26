@@ -2,7 +2,8 @@
 
 #include <array>
 #include <string>
-#include <unordered_set>
+// #include <unordered_set>
+#include <set>
 #include <vector>
 constexpr size_t NeightbourCount = 8;
 
@@ -12,11 +13,10 @@ public:
         size_t x = 0;
         size_t y = 0;
         bool operator==(const Cell& other) const;
-
+        bool operator<(const Cell& other) const;
         struct CellHash {
             std::size_t operator()(const Cell& cell) const;
         };
-
         bool IsValid(size_t width, size_t height) const;
         std::array<Cell, NeightbourCount> GetNeighbours() const;
     };
@@ -29,7 +29,7 @@ public:
     };
 
     using RenderedField = std::vector<std::string>;
-    using CellSet = std::unordered_set<Cell, Cell::CellHash>;
+    using CellSet = std::set<Cell>;
     Minesweeper(size_t width, size_t height, size_t mines_count);
     Minesweeper(size_t width, size_t height, const std::vector<Cell>& cells_with_mines);
 
