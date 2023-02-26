@@ -70,6 +70,9 @@ void Minesweeper::NewGame(size_t width, size_t height, const std::vector<Cell>& 
 }
 
 void Minesweeper::OpenCell(const Cell& cell) {
+    if (game_status_ == GameStatus::NOT_STARTED) {
+        game_status_ = GameStatus::IN_PROGRESS;
+    }
     if (game_status_ == GameStatus::VICTORY || game_status_ == GameStatus::DEFEAT) {
         return;
     }
@@ -102,6 +105,9 @@ void Minesweeper::OpenCell(const Cell& cell) {
 }
 
 void Minesweeper::MarkCell(const Cell& cell) {
+    if (game_status_ == GameStatus::NOT_STARTED) {
+        game_status_ = GameStatus::IN_PROGRESS;
+    }
     if (game_status_ == GameStatus::VICTORY || game_status_ == GameStatus::DEFEAT) {
         return;
     }
@@ -132,6 +138,9 @@ auto Minesweeper::GetGameStatus() const -> GameStatus {
 }
 
 std::time_t Minesweeper::GetGameTime() const {
+    if (game_status_ == GameStatus::NOT_STARTED) {
+        return 0;
+    }
     if (game_status_ == GameStatus::DEFEAT || game_status_ == GameStatus::VICTORY) {
         return end_time_ - start_time_;
     }

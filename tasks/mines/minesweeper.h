@@ -14,9 +14,11 @@ public:
         size_t y = 0;
         bool operator==(const Cell& other) const;
         bool operator<(const Cell& other) const;
+
         struct CellHash {
             std::size_t operator()(const Cell& cell) const;
         };
+
         bool IsValid(size_t width, size_t height) const;
         std::array<Cell, NeightbourCount> GetNeighbours() const;
     };
