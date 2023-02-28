@@ -36,3 +36,6 @@ add_subdirectory(tasks/mines)
 add_subdirectory(tasks/scorer2)
 add_subdirectory(tasks/search2)
 add_subdirectory(tasks/unixpath2)
+
+# project
+add_subdirectory(tasks/image_processor)
