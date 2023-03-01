@@ -5,6 +5,19 @@
     - task: image_processor
       score: 1000
 
+- group:    04-homework-four
+  start:    01-03-2023 00:00
+  deadline: 22-03-2023 23:59
+  tasks:
+    - task: cow
+      score: 200
+    - task: poly
+      score: 100
+    - task: robot
+      score: 200
+    - task: zip2
+      score: 100
+
 - group:    03-homework-three
   start:    15-02-2023 00:00
   deadline: 01-03-2023 23:59
