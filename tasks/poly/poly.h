@@ -20,7 +20,7 @@ public:
     Poly& operator=(const Poly& other);
 
     ~Poly() = default;
-    int64_t operator()(__int128_t x_value) const;
+    int64_t operator()(int64_t x_value) const;
     bool operator==(const Poly& other) const = default;
     bool operator!=(const Poly& other) const = default;
     Poly operator+(const Poly& other) const;
