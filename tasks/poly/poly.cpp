@@ -92,9 +92,9 @@ Poly& Poly::operator*=(const Poly& other) {
     return *this;
 }
 
-int64_t Poly::operator()(int64_t x_value) const {
+int64_t Poly::operator()(__int128_t x_value) const {
     int64_t poly_value = 0;
-    int64_t current_value_degree = 1;  // x_value^0 is always 1
+    __int128_t current_value_degree = 1;  // x_value^0 is always 1
     for (size_t degree = 0; degree < coeffs_.size(); ++degree) {
         poly_value += coeffs_[degree] * current_value_degree;
         current_value_degree *= x_value;
