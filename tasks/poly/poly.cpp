@@ -2,13 +2,17 @@
 
 #include <algorithm>
 
-Poly::Poly(std::initializer_list<std::pair<std::size_t, int64_t>> powers_with_coeffs) {
-    std::size_t maximum_power = std::max_element(powers_with_coeffs.begin(), powers_with_coeffs.end())->first;
-    coeffs_.resize(maximum_power + 1);
-    for (const auto& [power, coeff] : powers_with_coeffs) {
-        coeffs_[power] = coeff;
+Poly::Poly(std::initializer_list<std::pair<std::size_t, int64_t>> powers_with_coeffs) {  // TODO: mb zero?
+    if (empty(powers_with_coeffs)) {
+        coeffs_ = {};
+    } else {
+        std::size_t maximum_power = std::max_element(powers_with_coeffs.begin(), powers_with_coeffs.end())->first;
+        coeffs_.resize(maximum_power + 1);
+        for (const auto& [power, coeff] : powers_with_coeffs) {
+            coeffs_[power] = coeff;
+        }
+        TrimZeros();
     }
-    TrimZeros();
 };
 
 Poly::Poly(std::initializer_list<int32_t> coeffs_values) : coeffs_(coeffs_values.begin(), coeffs_values.end()) {
@@ -90,9 +94,7 @@ Poly Poly::operator*(const Poly& other) const {
 // This creates an extra copy, but we anyway do O(n^2), so this is not a bottle-neck
 // The best way would be to do *= using Karatsuba/FFT, but it is hard
 Poly& Poly::operator*=(const Poly& other) {
-    *this = (*this) * other;
-    TrimZeros();
-    return *this;
+    return *this = (*this) * other;
 }
 
 int64_t Poly::operator()(int64_t x_value) const {
