@@ -33,7 +33,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Poly& poly);
 
 private:
-    std::vector<int32_t> coeffs_;
+    std::vector<int64_t> coeffs_;
     void TrimZeros();
     void AddWithMulitplier(const Poly& other, std::int64_t delta, size_t offset = 0);
 };

@@ -97,7 +97,7 @@ int64_t Poly::operator()(int64_t x_value) const {
 
 Poly Poly::operator-() const {
     Poly reversed_sign{*this};
-    for (int32_t& coeff : reversed_sign.coeffs_) {
+    for (int64_t& coeff : reversed_sign.coeffs_) {
         coeff *= -1;
     }
     return reversed_sign;
