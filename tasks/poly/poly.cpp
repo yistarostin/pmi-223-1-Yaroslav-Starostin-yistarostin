@@ -100,7 +100,9 @@ int64_t Poly::operator()(int64_t x_value) const {
     int64_t current_value_degree = 1;  // x_value^0 is always 1
     for (size_t degree = 0; degree < last_nonzero_coef; ++degree) {
         poly_value += coeffs_[degree] * current_value_degree;
-        current_value_degree *= x_value;
+        if(degree + 1 != last_nonzero_coef){
+            current_value_degree *= x_value;
+        }
     }
     return poly_value;
 }
