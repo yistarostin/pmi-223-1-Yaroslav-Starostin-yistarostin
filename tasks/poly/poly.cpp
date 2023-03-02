@@ -79,6 +79,12 @@ Poly Poly::operator*(const Poly& other) const {
     return res;
 }
 
+// This creates an extra copy, but we anyway do O(n^2), so this is not a bottle-neck
+// The best way would be to do *= using Karatsuba/FFT, but it is hard
+Poly& Poly::operator*=(const Poly& other) {
+    return *this = (*this) * other;
+}
+
 int64_t Poly::operator()(int32_t x_value) const {
     int64_t poly_value = 0;
     int64_t current_value_degree = 1;  // x_value^0 is always 1
