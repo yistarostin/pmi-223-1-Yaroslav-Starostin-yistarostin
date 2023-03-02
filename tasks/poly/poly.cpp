@@ -94,7 +94,9 @@ Poly& Poly::operator*=(const Poly& other) {
 
 int64_t Poly::operator()(int64_t x_value) const {
     int64_t poly_value = 0;
-    size_t last_nonzero_coef = coeffs_.size() - (std::find_if(coeffs_.rbegin(), coeffs_.rend(), [](int x){return x != 0;}) - coeffs_.rbegin());
+    size_t last_nonzero_coef =
+        coeffs_.size() -
+        (std::find_if(coeffs_.rbegin(), coeffs_.rend(), [](int x) { return x != 0; }) - coeffs_.rbegin());
     int64_t current_value_degree = 1;  // x_value^0 is always 1
     for (size_t degree = 0; degree < last_nonzero_coef; ++degree) {
         poly_value += coeffs_[degree] * current_value_degree;
