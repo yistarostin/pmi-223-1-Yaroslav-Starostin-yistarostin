@@ -11,7 +11,7 @@ public:
     Poly() = default;
 
     Poly(std::initializer_list<int32_t> coeffs);
-    Poly(std::initializer_list<std::pair<size_t, int32_t>> coeffs);
+    Poly(std::initializer_list<std::pair<size_t, int64_t>> coeffs);
 
     Poly(const Poly& other) = default;
 
@@ -20,7 +20,7 @@ public:
     Poly& operator=(const Poly& other);
 
     ~Poly() = default;
-    int64_t operator()(int32_t x_value) const;
+    int64_t operator()(int64_t x_value) const;
     bool operator==(const Poly& other) const = default;
     bool operator!=(const Poly& other) const = default;
     Poly operator+(const Poly& other) const;
@@ -35,5 +35,5 @@ public:
 private:
     std::vector<int32_t> coeffs_;
     void TrimZeros();
-    void AddWithMulitplier(const Poly& other, std::int32_t delta, size_t offset = 0);
+    void AddWithMulitplier(const Poly& other, std::int64_t delta, size_t offset = 0);
 };

@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-Poly::Poly(std::initializer_list<std::pair<std::size_t, int32_t>> powers_with_coeffs) {
+Poly::Poly(std::initializer_list<std::pair<std::size_t, int64_t>> powers_with_coeffs) {
     std::size_t maximum_power = std::max_element(powers_with_coeffs.begin(), powers_with_coeffs.end())->first;
     coeffs_.resize(maximum_power + 1);
     for (const auto& [power, coeff] : powers_with_coeffs) {
@@ -50,7 +50,7 @@ Poly& Poly::operator-=(const Poly& other) {
     return *this;
 }
 
-void Poly::AddWithMulitplier(const Poly& other, int32_t lambda, size_t offset) {
+void Poly::AddWithMulitplier(const Poly& other, int64_t lambda, size_t offset) {
     if (other.coeffs_.size() + offset > coeffs_.size()) {
         coeffs_.resize(other.coeffs_.size() + offset);
     }
@@ -85,7 +85,7 @@ Poly& Poly::operator*=(const Poly& other) {
     return *this = (*this) * other;
 }
 
-int64_t Poly::operator()(int32_t x_value) const {
+int64_t Poly::operator()(int64_t x_value) const {
     int64_t poly_value = 0;
     int64_t current_value_degree = 1;  // x_value^0 is always 1
     for (size_t degree = 0; degree < coeffs_.size(); ++degree) {
