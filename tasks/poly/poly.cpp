@@ -61,12 +61,16 @@ void Poly::AddWithMulitplier(const Poly& other, int64_t lambda, size_t offset) {
 
 Poly Poly::operator+(const Poly& other) const {
     Poly now{*this};
-    return now += other;
+    now += other;
+    now.TrimZeros();
+    return now;
 }
 
 Poly Poly::operator-(const Poly& other) const {
     Poly now{*this};
-    return now -= other;
+    now -= other;
+    now.TrimZeros();
+    return now;
 }
 
 // F*ck FFT, all my homies use O(n^2) algorithms
@@ -76,13 +80,16 @@ Poly Poly::operator*(const Poly& other) const {
     for (size_t c = 0; c < coeffs_.size(); ++c) {
         res.AddWithMulitplier(other, coeffs_[c], c);
     }
+    res.TrimZeros();
     return res;
 }
 
 // This creates an extra copy, but we anyway do O(n^2), so this is not a bottle-neck
 // The best way would be to do *= using Karatsuba/FFT, but it is hard
 Poly& Poly::operator*=(const Poly& other) {
-    return *this = (*this) * other;
+    *this = (*this) * other;
+    TrimZeros();
+    return *this;
 }
 
 int64_t Poly::operator()(int64_t x_value) const {
