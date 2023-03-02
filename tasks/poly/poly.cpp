@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-Poly::Poly(std::initializer_list<std::pair<std::size_t, int64_t>> powers_with_coeffs) {  // TODO: mb zero?
+Poly::Poly(std::initializer_list<std::pair<std::size_t, int64_t>> powers_with_coeffs) {
     if (empty(powers_with_coeffs)) {
         coeffs_ = {};
     } else {
@@ -15,7 +15,7 @@ Poly::Poly(std::initializer_list<std::pair<std::size_t, int64_t>> powers_with_co
     }
 };
 
-Poly::Poly(std::initializer_list<int32_t> coeffs_values) : coeffs_(coeffs_values.begin(), coeffs_values.end()) {
+Poly::Poly(std::initializer_list<int64_t> coeffs_values) : coeffs_(coeffs_values.begin(), coeffs_values.end()) {
     TrimZeros();
 }
 

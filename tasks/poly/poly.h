@@ -10,7 +10,7 @@ class Poly {
 public:
     Poly() = default;
 
-    Poly(std::initializer_list<int32_t> coeffs);
+    Poly(std::initializer_list<int64_t> coeffs);
     Poly(std::initializer_list<std::pair<size_t, int64_t>> coeffs);
 
     Poly(const Poly& other) = default;
