@@ -75,6 +75,9 @@ Poly Poly::operator-(const Poly& other) const {
 
 // F*ck FFT, all my homies use O(n^2) algorithms
 Poly Poly::operator*(const Poly& other) const {
+    if (coeffs_.empty() || other.coeffs_.empty()) {  // in case some polynomial is identically zero
+        return Poly{};
+    }
     Poly res;
     res.coeffs_.resize((coeffs_.size() - 1) * (other.coeffs_.size() - 1));
     for (size_t c = 0; c < coeffs_.size(); ++c) {
