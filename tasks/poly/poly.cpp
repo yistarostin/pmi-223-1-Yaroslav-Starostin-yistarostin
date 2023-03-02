@@ -79,7 +79,7 @@ Poly Poly::operator*(const Poly& other) const {
         return Poly{};
     }
     Poly res;
-    res.coeffs_.resize(coeffs_.size() * other.coeffs_.size());
+    res.coeffs_.resize(coeffs_.size() + other.coeffs_.size());
     for (size_t c = 0; c < coeffs_.size(); ++c) {
         res.AddWithMulitplier(other, coeffs_[c], c);
     }
