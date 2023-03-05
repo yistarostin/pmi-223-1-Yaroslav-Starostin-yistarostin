@@ -2,21 +2,16 @@
 
 #include <algorithm>
 
-Poly::Poly(std::initializer_list<std::pair<std::size_t, int64_t>> powers_with_coeffs) {
-    if (empty(powers_with_coeffs)) {
-        coeffs_ = {};
-    } else {
-        std::size_t maximum_power = std::max_element(powers_with_coeffs.begin(), powers_with_coeffs.end())->first;
-        coeffs_.resize(maximum_power + 1);
-        for (const auto& [power, coeff] : powers_with_coeffs) {
-            coeffs_[power] = coeff;
-        }
-        TrimZeros();
-    }
-};
+Poly::Poly(std::initializer_list<std::pair<PowersType, CoeffsType>> powers_with_coeffs)
+    : coeffs_(powers_with_coeffs.begin(), powers_with_coeffs.end()){};
 
-Poly::Poly(std::initializer_list<int64_t> coeffs_values) : coeffs_(coeffs_values.begin(), coeffs_values.end()) {
-    TrimZeros();
+Poly::Poly(std::initializer_list<CoeffsType> coeffs_values) {
+    for (std::size_t i = 0; CoeffsType coef : coeffs_values) {
+        if (coef != 0) {
+            coeffs_[i] = coef;
+        }
+        ++i;
+    }
 }
 
 Poly& Poly::operator=(const Poly& other) {
@@ -29,15 +24,14 @@ std::ostream& operator<<(std::ostream& os, const Poly& poly) {
         return os << "y = 0";
     }
     os << "y =";
-    for (size_t degree = poly.coeffs_.size() - 1; degree > 0; --degree) {
-        if (poly.coeffs_[degree] == 0) {
-            continue;
+    for (auto it = poly.coeffs_.rbegin(); it != poly.coeffs_.rend(); ++it) {
+        const auto& [power, coeff] = *it;
+        if (power != 0) {
+            os << " " << ((it != poly.coeffs_.rbegin() && coeff > 0) ? "+ " : "") << coeff << "x^" << power;
         }
-        os << " " << ((degree != poly.coeffs_.size() - 1 && poly.coeffs_[degree] > 0) ? "+ " : "")
-           << poly.coeffs_[degree] << "x^" << degree;
     }
-    if (poly.coeffs_[0] != 0) {
-        os << " " << (poly.coeffs_[0] > 0 ? "+" : "-") << " " << std::abs(poly.coeffs_[0]);
+    if (poly.coeffs_.count(0) != 0) {
+        os << " " << (poly.coeffs_.at(0) > 0 ? "+" : "-") << " " << std::abs(poly.coeffs_.at(0));
     }
     return os;
 }
@@ -54,26 +48,24 @@ Poly& Poly::operator-=(const Poly& other) {
     return *this;
 }
 
-void Poly::AddWithMulitplier(const Poly& other, int64_t lambda, size_t offset) {
-    if (other.coeffs_.size() + offset > coeffs_.size()) {
-        coeffs_.resize(other.coeffs_.size() + offset);
-    }
-    for (size_t degree = 0; degree < other.coeffs_.size(); ++degree) {
-        coeffs_[degree + offset] += other.coeffs_[degree] * lambda;
+void Poly::AddWithMulitplier(const Poly& other, CoeffsType lambda, PowersType offset) {
+    for (auto& [power, coeff] : other.coeffs_) {
+        if (coeffs_.count(power + offset) == 0) {
+            coeffs_[power + offset] = 0;
+        }
+        coeffs_[power + offset] = coeffs_[power + offset] + coeff * lambda;
     }
 }
 
 Poly Poly::operator+(const Poly& other) const {
     Poly now{*this};
     now += other;
-    now.TrimZeros();
     return now;
 }
 
 Poly Poly::operator-(const Poly& other) const {
     Poly now{*this};
     now -= other;
-    now.TrimZeros();
     return now;
 }
 
@@ -83,9 +75,8 @@ Poly Poly::operator*(const Poly& other) const {
         return Poly{};
     }
     Poly res;
-    res.coeffs_.resize(coeffs_.size() + other.coeffs_.size());
-    for (size_t c = 0; c < coeffs_.size(); ++c) {
-        res.AddWithMulitplier(other, coeffs_[c], c);
+    for (auto& [power, coeff] : other.coeffs_) {
+        res.AddWithMulitplier(other, coeff, power);
     }
     res.TrimZeros();
     return res;
@@ -97,31 +88,47 @@ Poly& Poly::operator*=(const Poly& other) {
     return *this = (*this) * other;
 }
 
-int64_t Poly::operator()(int64_t x_value) const {
-    int64_t poly_value = 0;
-    size_t last_nonzero_coef =
-        coeffs_.size() -
-        (std::find_if(coeffs_.rbegin(), coeffs_.rend(), [](int x) { return x != 0; }) - coeffs_.rbegin());
-    int64_t current_value_degree = 1;  // x_value^0 is always 1
-    for (size_t degree = 0; degree < last_nonzero_coef; ++degree) {
-        poly_value += coeffs_[degree] * current_value_degree;
-        if (degree + 1 != last_nonzero_coef) {
-            current_value_degree *= x_value;
-        }
+bool Poly::operator==(const Poly& other) const {
+    bool eq = coeffs_ == other.coeffs_;
+    return eq;
+}
+
+CoeffsType Pow(CoeffsType x, PowersType n) {
+    if (n == 0) {
+        return 1;
+    }
+    if (n == 1) {
+        return x;
+    }
+    if (n % 2 == 0) {
+        return Pow(x * x, n / 2);
+    } else {
+        return Pow(x * x, n / 2) * x;
+    }
+}
+
+CoeffsType Poly::operator()(CoeffsType x_value) const {
+    CoeffsType poly_value = 0;
+    for (const auto& [power, coef] : coeffs_) {
+        poly_value += Pow(x_value, power) * coef;
     }
     return poly_value;
 }
 
 Poly Poly::operator-() const {
     Poly reversed_sign{*this};
-    for (int64_t& coeff : reversed_sign.coeffs_) {
+    for (auto& [_, coeff] : reversed_sign.coeffs_) {
         coeff *= -1;
     }
     return reversed_sign;
 }
 
 void Poly::TrimZeros() {
-    while (!coeffs_.empty() && coeffs_.back() == 0) {
-        coeffs_.pop_back();
+    for (auto it = coeffs_.begin(); it != coeffs_.end();) {
+        if (it->second == 0) {
+            it = coeffs_.erase(it);
+        } else {
+            ++it;
+        }
     }
 }

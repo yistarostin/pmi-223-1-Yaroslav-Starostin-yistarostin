@@ -6,12 +6,15 @@
 #include <utility>
 #include <vector>
 
+using PowersType = size_t;
+using CoeffsType = int64_t;
+using PolynomialContainer = std::map<PowersType, CoeffsType>;
+
 class Poly {
 public:
     Poly() = default;
-
-    Poly(std::initializer_list<int64_t> coeffs);
-    Poly(std::initializer_list<std::pair<size_t, int64_t>> coeffs);
+    Poly(std::initializer_list<CoeffsType> coeffs);
+    Poly(std::initializer_list<std::pair<PowersType, CoeffsType>> coeffs);
 
     Poly(const Poly& other) = default;
 
@@ -20,8 +23,8 @@ public:
     Poly& operator=(const Poly& other);
 
     ~Poly() = default;
-    int64_t operator()(int64_t x_value) const;
-    bool operator==(const Poly& other) const = default;
+    CoeffsType operator()(CoeffsType x_value) const;
+    bool operator==(const Poly& other) const;
     bool operator!=(const Poly& other) const = default;
     Poly operator+(const Poly& other) const;
     Poly operator-(const Poly& other) const;
@@ -33,7 +36,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Poly& poly);
 
 private:
-    std::vector<int64_t> coeffs_;
+    PolynomialContainer coeffs_;
     void TrimZeros();
-    void AddWithMulitplier(const Poly& other, std::int64_t delta, size_t offset = 0);
+    void AddWithMulitplier(const Poly& other, CoeffsType delta, PowersType offset = 0);
 };
