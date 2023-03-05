@@ -1,10 +1,6 @@
 #pragma once
-#include <array>
-#include <cstdint>
 #include <map>
 #include <ostream>
-#include <utility>
-#include <vector>
 
 using PowersType = size_t;
 using CoeffsType = int64_t;

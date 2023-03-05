@@ -1,7 +1,5 @@
 #include "poly.h"
 
-#include <algorithm>
-
 Poly::Poly(std::initializer_list<std::pair<PowersType, CoeffsType>> powers_with_coeffs)
     : coeffs_(powers_with_coeffs.begin(), powers_with_coeffs.end()){};
 
