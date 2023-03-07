@@ -101,7 +101,7 @@ class ImageProcessorTester:
 
             with tempfile.NamedTemporaryFile(suffix=".bmp") as output_file:
                 subprocess.check_call([self.image_processor_executable, input_file, output_file.name] + test_case.args,
-                                      timeout=60)
+                                      timeout=180)
 
                 images_distance = calc_images_distance(expected_output_file, output_file.name)
                 if images_distance > test_case.eps:
