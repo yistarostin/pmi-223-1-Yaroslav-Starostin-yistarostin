@@ -13,7 +13,6 @@ public:
     explicit Topology(const std::vector<std::vector<bool>> barriers) : field_(barriers) {
     }
 
-
     virtual std::vector<Point> GetNeighbours(const Point& point) const = 0;
     Distance MeasureDistance(const Point& from, const Point& to) const;
 
