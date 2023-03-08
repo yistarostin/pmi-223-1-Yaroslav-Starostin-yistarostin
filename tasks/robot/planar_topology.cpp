@@ -6,13 +6,13 @@ PlanarTopology::PlanarTopology(const std::vector<std::vector<bool>> &barriers) :
 }
 
 std::vector<Point> PlanarTopology::GetNeighbours(const Point &point) const {
-    auto width = field_.GetWidth(), height = field_.GetHeight();
 
     std::vector<Point> neighbours;
     const std::vector<Point> possible_neighbours = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-    for (const auto &[dx, dy] : possible_neighbours) {
-        if (point.x + dx >= 0 && point.x + dx < width && point.y + dy >= 0 && point.y + dy < height) {
-            neighbours.push_back({.x = point.x + dx, .y = point.y + dy});
+    for (const auto &p : possible_neighbours) {
+        auto move = point - p;
+        if (field_.IsPointValid(move)) {
+            neighbours.push_back(move);
         }
     }
 

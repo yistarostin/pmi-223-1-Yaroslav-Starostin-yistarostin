@@ -6,7 +6,7 @@
 class Field {
 public:
     explicit Field(const std::vector<std::vector<bool>>& field)
-        : barriers_(field), width_(barriers_.back().size()), height_(barriers_.size()) {
+        : barriers_(field), width_(std::ssize(barriers_.back())), height_(std::ssize(barriers_)) {
     }
 
     bool IsBlocked(const Point& p) const {
