@@ -5,7 +5,7 @@
 
 class Field {
 public:
-    Field(const std::vector<std::vector<bool>> field)
+    explicit Field(const std::vector<std::vector<bool>>& field)
         : barriers_(field), width_(barriers_.back().size()), height_(barriers_.size()) {
     }
 
