@@ -53,6 +53,7 @@ void RequirePathIsValid(const robot::Path& path, const World& world, const Topol
 
 }  // namespace
 
+
 TEST_CASE("RobotPlanar") {
     {
         const auto& map = ParseMap({
@@ -77,7 +78,7 @@ TEST_CASE("RobotPlanar") {
         PlanarTopology topology(map);
         World world(topology, Point{.x = 0, .y = 0}, Point{.x = 2, .y = 0});
         const auto& path = robot::FindPath(world);
-
+        //Segfaults here :(
         RequirePathIsValid(path, world, topology);
 
         robot::Path expected_path = {

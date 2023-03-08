@@ -19,4 +19,7 @@ public:
     const Point& GetCurrentPosition() const;
 
     void Move(const Point& to);
+private:
+    const Topology& topology_;
+    Point start_, current_, end_;
 };
