@@ -15,8 +15,7 @@ auto Topology::MeasureDistance(const Point& from, const Point& to) const -> Dist
         }
         auto distances_to_curr = distances[curr];
         dfs.pop();
-        auto neightbours{GetNeighbours(curr)};
-        for (const auto& next : neightbours) {
+        for (const auto& next : GetNeighbours(curr)) {
             if (distances.count(next) == 0) {
                 distances[next] = distances_to_curr + 1;
                 dfs.push(next);

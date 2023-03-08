@@ -8858,9 +8858,9 @@ namespace detail {
 
     // Abstracts iterators into args as a stream of tokens, with option arguments uniformly handled
     class TokenStream {
-        using Iterator = std::vector<std::string>::const_iterator;
-        Iterator it;
-        Iterator itEnd;
+        using ZipIterator = std::vector<std::string>::const_iterator;
+        ZipIterator it;
+        ZipIterator itEnd;
         std::vector<Token> m_tokenBuffer;
 
         void loadBuffer() {
@@ -8897,7 +8897,7 @@ namespace detail {
     public:
         explicit TokenStream( Args const &args ) : TokenStream( args.m_args.begin(), args.m_args.end() ) {}
 
-        TokenStream( Iterator it, Iterator itEnd ) : it( it ), itEnd( itEnd ) {
+        TokenStream( ZipIterator it, ZipIterator itEnd ) : it( it ), itEnd( itEnd ) {
             loadBuffer();
         }
 

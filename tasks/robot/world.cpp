@@ -19,6 +19,7 @@ const Point& World::GetEnd() const {
 std::unordered_map<Point, Topology::Distance> World::Lookup() const {
     std::unordered_map<Point, Topology::Distance> ways;
     auto neighbours = topology_.GetNeighbours(current_);
+    ways.reserve(neighbours.size());
     for (auto& point : neighbours) {
         ways.insert({point, topology_.MeasureDistance(point, end_)});
     }
