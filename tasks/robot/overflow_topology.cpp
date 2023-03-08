@@ -3,7 +3,7 @@
 
 #include <algorithm>
 
-OverflowTopology::OverflowTopology(const Field &f) : Topology(f) {
+OverflowTopology::OverflowTopology(const std::vector<std::vector<bool>>& barriers) : Topology(barriers) {
 }
 
 std::vector<Point> OverflowTopology::GetNeighbours(const Point &point) const {

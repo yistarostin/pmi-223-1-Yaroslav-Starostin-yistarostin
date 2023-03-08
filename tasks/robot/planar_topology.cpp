@@ -2,9 +2,8 @@
 
 #include <algorithm>
 
-PlanarTopology::PlanarTopology(const Field &field) : Topology(field) {
+PlanarTopology::PlanarTopology(const std::vector<std::vector<bool>>& barriers) : Topology(barriers) {
 }
-
 std::vector<Point> PlanarTopology::GetNeighbours(const Point &point) const {
     auto width = field_.GetWidth(), height = field_.GetHeight();
 

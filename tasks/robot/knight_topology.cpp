@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-KnightTopology::KnightTopology(const Field &f) : Topology(f) {
+KnightTopology::KnightTopology(const std::vector<std::vector<bool>>& barriers) : Topology(barriers) {
 }
 
 std::vector<Point> KnightTopology::GetNeighbours(const Point &point) const {
