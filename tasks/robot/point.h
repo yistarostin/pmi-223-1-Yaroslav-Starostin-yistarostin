@@ -1,6 +1,7 @@
 #pragma once
 #include <cstddef>
 #include <functional>
+static const std::size_t LEET_NUMBER_FOR_HASHING = 1337;
 using Coordinate = std::ptrdiff_t;
 
 struct Point {
@@ -28,7 +29,7 @@ namespace std {
 template <>
 struct hash<Point> {
     std::size_t operator()(const Point& point) const {
-        return point.x * 1337 + point.y;
+        return point.x * LEET_NUMBER_FOR_HASHING + point.y;
     }
 };
 }  // namespace std

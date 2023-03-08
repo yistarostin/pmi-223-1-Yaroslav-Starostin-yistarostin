@@ -5,8 +5,8 @@
 
 class Field {
 public:
-    Field(const std::vector<std::vector<bool>> field_)
-        : barriers_(field_), width_(barriers_.back().size()), height_(barriers_.size()) {
+    Field(const std::vector<std::vector<bool>> field)
+        : barriers_(field), width_(barriers_.back().size()), height_(barriers_.size()) {
     }
 
     bool IsBlocked(const Point& p) const {
