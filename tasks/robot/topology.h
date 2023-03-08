@@ -10,7 +10,6 @@ public:
     explicit Topology(const std::vector<std::vector<bool>> barriers) : field_(barriers) {
     }
 
-
     using Distance = std::ptrdiff_t;
     static const constexpr Distance UNREACHABLE = -1;
 

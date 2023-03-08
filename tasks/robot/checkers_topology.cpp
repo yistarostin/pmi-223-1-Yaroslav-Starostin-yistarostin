@@ -3,7 +3,7 @@
 #include <queue>
 #include <unordered_set>
 
-CheckersTopology::CheckersTopology(const std::vector<std::vector<bool>>& barriers): Topology(barriers){
+CheckersTopology::CheckersTopology(const std::vector<std::vector<bool>> &barriers) : Topology(barriers) {
 }
 
 std::vector<Point> CheckersTopology::GetNeighbours(const Point &point) const {
