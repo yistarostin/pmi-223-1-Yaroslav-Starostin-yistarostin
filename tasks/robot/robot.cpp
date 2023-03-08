@@ -1,29 +1,13 @@
 #include "robot.h"
 
 #include <unordered_map>
-// #include <queue>
 using Distance = Topology::Distance;
 
 namespace robot {
 Path FindPath(World& world) {
     Path path;
-    // std::unordered_map<Point, Point> from;
-    // std::unordered_map<Point, Distance> distance;
     auto start = world.GetStart();
     auto target = world.GetEnd();
-    /*std::queue<Point> dfs;
-    while(!dfs.empty()){
-        Point now = dfs.front();
-        dfs.pop();
-        if(now == target){
-            break;
-        }
-        auto distance_to_now = distance[now];
-        world.Move(now);
-        for(auto& [next, dist] : world.Lookup()){
-            //TODO: push neighbours
-        }
-    }*/
     auto now = start;
     while (now != target) {
         path.push_back(now);

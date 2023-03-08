@@ -12,8 +12,11 @@ std::vector<Point> OverflowTopology::GetNeighbours(const Point &point) const {
     std::vector<Point> neighbours;
     const std::vector<Point> possible_neighbours = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
     for (const auto &[dx, dy] : possible_neighbours) {
-        neighbours.push_back(Point{.x = ((point.x + width - dx) % width), .y = ((point.y + height - dy) % height)});
+        auto move = Point{.x = ((point.x + width - dx) % width), .y = ((point.y + height - dy) % height)};
+        if (!field_.IsBlocked(move)) {
+            neighbours.push_back(move);
+        }
     }
 
-    return FilterNeighbours(neighbours);
+    return neighbours;
 }

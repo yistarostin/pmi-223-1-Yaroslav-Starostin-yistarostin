@@ -18,5 +18,4 @@ public:
 
 protected:
     Field field_;
-    std::vector<Point> FilterNeighbours(const std::vector<Point>& possible_neighbours) const;
 };

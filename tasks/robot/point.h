@@ -8,11 +8,6 @@ struct Point {
     Coordinate x = 0;
     Coordinate y = 0;
 
-    /*Point(Coordinate x, Coordinate y) : x(x), y(y) {
-    }
-    Point(std::initializer_list<Coordinate> coordinates): x(*coordinates.begin()), y(*(coordinates.begin() + 1)){
-
-    }*/
     Point operator-(const Point& other) const {
         return {x - other.x, y - other.y};
     }

@@ -37,6 +37,5 @@ std::vector<Point> CheckersTopology::GetNeighbours(const Point &point) const {
     }
     can_get.erase(point);
     neighbours.insert(neighbours.begin(), can_get.begin(), can_get.end());
-    // return FilterNeighbours(neighbours); Do we need that ?..
     return neighbours;
 }

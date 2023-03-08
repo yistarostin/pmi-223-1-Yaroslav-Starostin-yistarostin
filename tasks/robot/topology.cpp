@@ -29,14 +29,3 @@ auto Topology::MeasureDistance(const Point& from, const Point& to) const -> Dist
     }
     return distance->second;
 }
-
-std::vector<Point> Topology::FilterNeighbours(const std::vector<Point>& possible_neighbours) const {
-    std::vector<Point> available_neighbours;
-    for (const auto& p : possible_neighbours) {
-        auto blocked = field_.IsBlocked(p);
-        if (!blocked) {
-            available_neighbours.push_back(p);
-        }
-    }
-    return available_neighbours;
-}

@@ -11,10 +11,9 @@ std::vector<Point> KnightTopology::GetNeighbours(const Point &point) const {
                                                     {2, 1},   {2, -1}, {1, -2}, {-1, -2}};
     for (const auto &p : possible_neighbours) {
         auto move = point - p;
-        if (field_.IsPointValid(move)) {
+        if (field_.IsPointValid(move) && !field_.IsBlocked(move)) {
             neighbours.push_back(move);
         }
     }
-
-    return FilterNeighbours(neighbours);
+    return neighbours;
 }
