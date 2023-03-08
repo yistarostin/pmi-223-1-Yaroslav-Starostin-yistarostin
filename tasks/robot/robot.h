@@ -7,4 +7,4 @@ namespace robot {
 using Path = std::vector<Point>;
 
 Path FindPath(World& world);
-}
+}  // namespace robot
