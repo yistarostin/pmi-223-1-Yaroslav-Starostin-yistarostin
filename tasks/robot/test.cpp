@@ -1,4 +1,6 @@
+#include <algorithm>
 #include <catch.hpp>
+#include <unordered_set>
 
 #include "checkers_topology.h"
 #include "knight_topology.h"
@@ -7,9 +9,6 @@
 #include "robot.h"
 #include "topology.h"
 #include "world.h"
-
-#include <algorithm>
-#include <unordered_set>
 
 namespace {
 std::vector<std::vector<bool>> ParseMap(const std::vector<std::string>& text_map) {
@@ -77,7 +76,7 @@ TEST_CASE("RobotPlanar") {
         PlanarTopology topology(map);
         World world(topology, Point{.x = 0, .y = 0}, Point{.x = 2, .y = 0});
         const auto& path = robot::FindPath(world);
-
+        // Segfaults here :(
         RequirePathIsValid(path, world, topology);
 
         robot::Path expected_path = {

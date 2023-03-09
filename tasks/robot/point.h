@@ -1,8 +1,30 @@
 #pragma once
-
 #include <cstddef>
+#include <functional>
+static const std::size_t LEET_NUMBER_FOR_HASHING = 1337;
+using Coordinate = std::ptrdiff_t;
 
 struct Point {
-    size_t x = 0;
-    size_t y = 0;
+    Coordinate x = 0;
+    Coordinate y = 0;
+
+    Point operator-(const Point& other) const {
+        return {x - other.x, y - other.y};
+    }
+
+    Point operator*(Coordinate lambda) const {
+        return Point({.x = x * lambda, .y = y * lambda});
+    }
+
+    bool operator==(const Point& other) const = default;
+    bool operator!=(const Point& other) const = default;
 };
+
+namespace std {
+template <>
+struct hash<Point> {
+    std::size_t operator()(const Point& point) const {
+        return point.x * LEET_NUMBER_FOR_HASHING + point.y;
+    }
+};
+}  // namespace std

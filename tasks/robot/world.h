@@ -1,10 +1,10 @@
 #pragma once
 
-#include "point.h"
-#include "topology.h"
-
 #include <exception>
 #include <unordered_map>
+
+#include "point.h"
+#include "topology.h"
 
 class World {
 public:
@@ -19,4 +19,8 @@ public:
     const Point& GetCurrentPosition() const;
 
     void Move(const Point& to);
+
+private:
+    const Topology& topology_;
+    Point start_, current_, end_;
 };

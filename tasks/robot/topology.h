@@ -1,15 +1,21 @@
 #pragma once
 
-#include "point.h"
-
 #include <vector>
+
+#include "field.h"
+#include "point.h"
 
 class Topology {
 public:
-    using Distance = ssize_t;
+    using Distance = std::ptrdiff_t;
+    static const constexpr Distance UNREACHABLE = -1;
 
-    std::vector<Point> GetNeighbours(const Point& point) const;
+    explicit Topology(const std::vector<std::vector<bool>> barriers) : field_(barriers) {
+    }
+
+    virtual std::vector<Point> GetNeighbours(const Point& point) const = 0;
     Distance MeasureDistance(const Point& from, const Point& to) const;
 
-    static const Distance UNREACHABLE = -1;
+protected:
+    Field field_;
 };
