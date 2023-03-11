@@ -27,7 +27,6 @@ CowString::CowString(CowString&& other) {
 
 CowString& CowString::operator=(const CowString& other) {
     delete buffer_;
-    // buffer_->~Buffer();
     buffer_ = other.buffer_;  // TODO ensure Buffer::operator= is not dogshit
     ++buffer_->ptr_count;
     return *this;
@@ -89,17 +88,10 @@ Character& Character::operator=(char c) {  // FIXME: definitely contains a bug
     if ((*master_buffer_)->data[offset_] == c) {
         return *this;
     }
-    // delete master_buffer_;
-    //(*master_buffer_) = Buffer(master_buffer_->data);
     if ((*master_buffer_)->ptr_count != 1) {
         (*master_buffer_)->~Buffer();
         *master_buffer_ = new Buffer((*master_buffer_)->data);
     }
-    // master_buffer_ = new Buffer(master_buffer_->data);
-    /*for(size_t i =0; i < master_buffer_->size_; ++i){
-        b.data[i] = master_buffer_->data[i];
-    }*/
-    // master_buffer_ = &b;
     (*master_buffer_)->data[offset_] = c;
     return *this;
 }
@@ -126,8 +118,6 @@ CowString& CowString::operator+=(const CowString& other) {
     std::strcpy(temp + buffer_->size_, other.buffer_->data);
     delete buffer_;
     buffer_ = new Buffer(temp);
-    // buffer_->data = temp;
-    // buffer_->size_ = std::strlen(temp);
     return *this;
 }
 
@@ -146,13 +136,8 @@ bool CowString::operator!=(const CowString& other) const {
 }
 
 const CowString::ConstStringCharacter CowString::At(std::size_t index) const {
-    // return StringCharacter{.offset_ = index, .master_buffer_ = nullptr}; //This is a fucking madness but why not
     return ConstStringCharacter{.offset_ = index, .master_buffer_ = &buffer_};
 }
-
-/*const CowString::StringCharacter CowString::operator[](std::size_t index) {
-    return StringCharacter{.offset_ = index, .master_buffer_ = &data};
-}*/
 
 CowString::StringCharacter CowString::operator[](std::size_t index) {
     return StringCharacter{.offset_ = index, .master_buffer_ = &buffer_};
@@ -169,7 +154,6 @@ CowString& CowString::operator+=(std::string_view other) {
     char* temp = new char[buffer_->size_ + other.size() + 1];
     std::strcpy(temp, buffer_->data);
     std::strcat(temp, other.data());
-    // delete data;
     size_t count = buffer_->ptr_count;
     if (count == 1) {
         delete buffer_;
@@ -206,8 +190,7 @@ ConstCowStringIterator& CowString::ConstCowStringIterator::operator++() {
 }
 
 const ConstCharacter ConstCowStringIterator::operator*() const {
-    return ConstStringCharacter{.offset_ = offset,
-                                .master_buffer_ = buffer};  // the evil fucking thing causes segfault (*˘︶˘*)✧*。
+    return ConstStringCharacter{.offset_ = offset, .master_buffer_ = buffer};
 }
 
 CowString::~CowString() {
@@ -217,5 +200,4 @@ CowString::~CowString() {
     } else {
         buffer_->~Buffer();
     }
-    // delete buffer_;
 }
