@@ -1,4 +1,13 @@
+project(image_processor)
 add_executable(
     image_processor
-    image_processor.cpp
+    src/image_processor.cpp
+    src/io.h
+    src/io.cpp
+    src/image.h
+    src/image.cpp
+    src/parser.h
+    src/parser.cpp
+    src/filters/filter.h
+    src/filters/filter.cpp
 )
