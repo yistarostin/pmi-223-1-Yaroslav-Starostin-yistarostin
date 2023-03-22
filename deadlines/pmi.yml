@@ -7,7 +7,7 @@
 
 - group:    04-homework-four
   start:    01-03-2023 00:00
-  deadline: 22-03-2023 23:59
+  deadline: 26-03-2023 23:59
   tasks:
     - task: cow
       score: 200
