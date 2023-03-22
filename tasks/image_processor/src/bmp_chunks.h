@@ -1,5 +1,5 @@
 #pragma once
-
+#include <cstdint>
 #pragma pack(push, 1)  // clang bug or smth?..
 
 struct BitMapHeader {
