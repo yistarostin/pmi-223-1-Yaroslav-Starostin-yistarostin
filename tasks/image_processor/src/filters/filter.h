@@ -2,6 +2,8 @@
 
 #include "../image.h"
 
+const constexpr int32_t COLOR_MAX = 255;
+
 class Filter {
 public:
     Filter() {

@@ -8,7 +8,6 @@ static const constexpr size_t RIGHT = 5;
 static const constexpr size_t ABOVE = 1;
 static const constexpr size_t UNDER = 8;
 static const constexpr size_t CENTER = 8;
-static const constexpr size_t COLOR_MAX = 255;
 
 class EdgeDetectionFilter : public MatrixFilter {
 public:

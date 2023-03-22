@@ -5,7 +5,6 @@
 #include "filter.h"
 
 static const constexpr int32_t MASK = 5;
-static const constexpr int32_t COLOR_MAX = 255;
 
 class SharpeningFilter : public MatrixFilter {
 public:
