@@ -11,6 +11,6 @@ class IO {
 
 public:
     explicit IO(const std::string& path);
-    Bytes Read() const;                    // TODO: return type is fuckined, use std::optional or smth
-    bool Write(const Bytes& bytes) const;  // TODO: same here
+    Image Read() const;                    // TODO: return type is fuckined, use std::optional or smth
+    bool Write(const Image& image) const;  // TODO: same here
 };

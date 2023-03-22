@@ -3,6 +3,9 @@
 
 class GaussianBlurFilter : public Filter {
 public:
-  void operator()(Image &image) const override;
   GaussianBlurFilter() {}
+  void operator()(Image &image) const override{
+      ; //TODO implement gau
+  }
+  ~GaussianBlurFilter() override{};
 };

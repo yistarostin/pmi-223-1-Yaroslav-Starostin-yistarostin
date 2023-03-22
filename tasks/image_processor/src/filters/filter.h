@@ -6,6 +6,7 @@ class Filter {
 public:
   Filter() {}
   virtual void operator()(Image &image) const = 0;
+  virtual ~Filter() {}
 };
 
 class MatrixFilter : public Filter {
@@ -22,6 +23,7 @@ public:
       ++y;
     }
   }
+  ~MatrixFilter() override {}
 
 public:
   MatrixFilter(const MatrixFilter &) = default;

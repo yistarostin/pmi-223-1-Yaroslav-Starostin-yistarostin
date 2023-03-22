@@ -11,8 +11,7 @@ using Bytes = std::vector<std::byte>;
 
 class Image {
 public:
-    explicit Image(const Bytes& bytes);
-    Bytes ToBytes() const;
+    //explicit Image(const Image& image);
     RowImage colors_;
 
     Kernel GetPixelWithNeighbours(std::size_t y, std::size_t x) {  // TODO: fix bound

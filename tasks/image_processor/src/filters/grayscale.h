@@ -1,9 +1,9 @@
 
 #pragma once
 #include "filter.h"
-const constexpr double RED = 0.299;
-const constexpr double GREEN = 0.587;
-const constexpr double BLUE = 0.114;
+static const constexpr double RED = 0.299;
+static const constexpr double GREEN = 0.587;
+static const constexpr double BLUE = 0.114;
 
 class GrayScaleFilter : public Filter {
 public:

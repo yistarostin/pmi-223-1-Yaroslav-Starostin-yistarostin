@@ -18,10 +18,9 @@ std::vector<std::unique_ptr<Filter>> GenerateFilters(const ParserResults& parsed
 bool Controller::Run(int argc, char** argv) const {
     ParserResults parsed_results = Parser().Parse(argc, argv);
     auto filters = GenerateFilters(parsed_results);
-    auto io_result = IO(parsed_results.input_path).Read();
-    Image image = Image(io_result);
+    auto image = IO(parsed_results.input_path).Read();
     ApplyFilters(image, filters);
-    auto success = IO(parsed_results.output_path).Write(image.ToBytes());
+    auto success = IO(parsed_results.output_path).Write(image);
     return success;
 }
 
@@ -42,6 +41,7 @@ std::vector<std::unique_ptr<Filter>> GenerateFilters(const ParserResults& parsed
                 break;
             case FilterName::GrayScale:
                 current = std::make_unique<GrayScaleFilter>();
+                break;
             case FilterName::Negative:
                 current = std::make_unique<NegativeFilter>();
                 break;
