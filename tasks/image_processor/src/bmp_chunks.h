@@ -1,6 +1,7 @@
 #pragma once
 
-#pragma pack(push, 1) // clang bug or smth?..
+#pragma pack(push, 1)  // clang bug or smth?..
+
 struct BitMapHeader {
     uint16_t type;
     uint32_t size;
@@ -22,12 +23,15 @@ struct InfoHeader {
     uint32_t crl_used;
     uint32_t crl_important;
 };
+
 #pragma pack(pop)
 
 #pragma pack(push, 1)
+
 struct RGBUint {
     uint8_t red;
     uint8_t green;
     uint8_t blue;
 };
+
 #pragma pack(pop)

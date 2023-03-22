@@ -1,7 +1,7 @@
 
 #include "io.h"
 
-IO::IO(const std::string &path): path_(path){
+IO::IO(const std::string &path) : path_(path) {
 }
 
 Image IO::Read() const {
