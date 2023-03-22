@@ -3,12 +3,6 @@
 
 #include "filter.h"
 
-static const constexpr size_t LEFT = 3;
-static const constexpr size_t RIGHT = 5;
-static const constexpr size_t ABOVE = 1;
-static const constexpr size_t UNDER = 8;
-static const constexpr size_t CENTER = 8;
-
 class EdgeDetectionFilter : public MatrixFilter {
 public:
     explicit EdgeDetectionFilter(std::size_t threshhold) : threshhold_(threshhold) {

@@ -2,7 +2,12 @@
 
 #include "../image.h"
 
-const constexpr int32_t COLOR_MAX = 255;
+const int32_t COLOR_MAX = 255;
+const size_t LEFT = 3;
+const size_t RIGHT = 5;
+const size_t ABOVE = 1;
+const size_t UNDER = 8;
+const size_t CENTER = 8;
 
 class Filter {
 public:
