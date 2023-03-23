@@ -1,4 +1,0 @@
-/home/yaroslavs/study/hse/cpp/pmi-223-1-Yaroslav-Starostin-yistarostin/tasks/image_processor/src/CMakeFiles/image_processor_lib.dir
-/home/yaroslavs/study/hse/cpp/pmi-223-1-Yaroslav-Starostin-yistarostin/tasks/image_processor/src/CMakeFiles/image_processor.dir
-/home/yaroslavs/study/hse/cpp/pmi-223-1-Yaroslav-Starostin-yistarostin/tasks/image_processor/src/CMakeFiles/edit_cache.dir
-/home/yaroslavs/study/hse/cpp/pmi-223-1-Yaroslav-Starostin-yistarostin/tasks/image_processor/src/CMakeFiles/rebuild_cache.dir
