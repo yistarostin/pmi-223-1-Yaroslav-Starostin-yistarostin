@@ -61,13 +61,13 @@ bool IO::Write(const Image &image) const {
     const uint32_t row_size = ((BitsPerPixel * image.Width() + 32 - 1) / 32) * 4;
     const uint32_t image_size = row_size * image.Height();
     const uint32_t file_size = FileHeaderSize + DIBHeaderSize + image_size;
-    BitMapHeader bitMapHeader{.type = image.bitMapHeader_.type,
-                              .size = file_size,
-                              .reserved1 = 0,
-                              .reserved2 = 0,
-                              .off_bits = ::FileHeaderSize + ::DIBHeaderSize};
-    ::PushChunk(image_write_stream, bitMapHeader);
-    InfoHeader infoHeader = {
+    BitMapHeader bit_map_header{.type = image.bitMapHeader_.type,
+                                .size = file_size,
+                                .reserved1 = 0,
+                                .reserved2 = 0,
+                                .off_bits = ::FileHeaderSize + ::DIBHeaderSize};
+    ::PushChunk(image_write_stream, bit_map_header);
+    InfoHeader info_header = {
         .size = ::DIBHeaderSize,
         .width = static_cast<uint32_t>(image.Width()),
         .height = static_cast<uint32_t>(image.Height()),
@@ -80,7 +80,7 @@ bool IO::Write(const Image &image) const {
         .crl_used = 0,
         .crl_important = 0,
     };
-    ::PushChunk(image_write_stream, infoHeader);
+    ::PushChunk(image_write_stream, info_header);
     for (size_t y = 0; y < image.Height(); ++y) {
         for (size_t x = 0; x < image.Width(); ++x) {
             auto [r, g, b] = image.colors_.at(image.Height() - 1 - y)[x];
