@@ -13,7 +13,7 @@ class Filter {
 public:
     virtual void operator()(Image &image) const = 0;
 
-    virtual ~Filter();
+    virtual ~Filter() noexcept;
 };
 
 class MatrixFilter : public Filter {
