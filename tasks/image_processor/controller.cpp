@@ -17,7 +17,6 @@ void ApplyFilters(Image& image, const std::vector<std::unique_ptr<Filter>>& filt
 std::vector<std::unique_ptr<Filter>> GenerateFilters(const ParserResults& parsed_results);
 
 bool Controller::Run(int argc, char** argv) const {
-    std::cout << argv[0] << std::endl;
     // return true;
     ParserResults parsed_results = Parser().Parse(argc, argv);
     auto filters = GenerateFilters(parsed_results);

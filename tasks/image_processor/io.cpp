@@ -22,8 +22,6 @@ IO::IO(const std::string &path) : path_(path) {
 }
 
 Image IO::Read() const {
-    auto s = std::filesystem::current_path().string();
-    std::cout << s << std::endl;
     std::ifstream bmp(path_, std::ios::binary);
     BitMapHeader bit_map_header;
     bmp.read(reinterpret_cast<char *>(&bit_map_header), sizeof(BitMapHeader));
@@ -49,7 +47,6 @@ Image IO::Read() const {
         }
     }
 
-    std::cout << info_header.size << " " << info_header.width << " " << info_header.height << "\n";
     return {pixels, bit_map_header, info_header};
 }
 
