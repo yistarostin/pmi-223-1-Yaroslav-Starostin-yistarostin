@@ -53,7 +53,7 @@ Image IO::Read() const {
 bool IO::Write(const Image &image) const {
     std::ofstream image_write_stream(path_, std::ios_base::binary);
     if (!image_write_stream.is_open()) {
-        throw std::invalid_argument(path_);  // TODO: throw something custom (derived)
+        throw std::invalid_argument("Cannot read bmp image from " + path_);
     }
     const uint32_t row_size = ((BitsPerPixel * image.Width() + 32 - 1) / 32) * 4;
     const uint32_t image_size = row_size * image.Height();

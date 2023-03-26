@@ -18,7 +18,13 @@ void ApplyFilters(Image& image, const std::vector<std::unique_ptr<Filter>>& filt
 std::vector<std::unique_ptr<Filter>> GenerateFilters(const ParserResults& parsed_results);
 
 void PrintUsage() {
-    std::cout << "Simple bmp processor\n--------------------\nAvailable Commands:\n...\n";
+    std::cout << "Simple bmp processor\n--------------------\nAvailable Commands:\n\tCrop: '-crop [height] "
+                 "[width]'\n\t\tCrops the image starting from left upper corner\n\tSaturate: '-saturate [{plus|minus}] "
+                 "[delta]'\n\t\tChanges image saturation on specified delta\n\tSharpening: '-sharp'\n\t\tApplies "
+                 "sharpening filter, multiplying each image kernel on specific matrix\n\tEdge detection: '-edge "
+                 "[threshold]'\n\t\tSharpens the image and then finds edges higher than threshold "
+                 "value\n\tGrayscale\n\t\tTurns image into colors between black and white \n\tNegative\n\t\tInverts "
+                 "each pixel\n";
 }
 
 void Controller::Run(int argc, char** argv) const {
@@ -46,7 +52,7 @@ std::vector<std::unique_ptr<Filter>> GenerateFilters(const ParserResults& parsed
                 current = std::make_unique<EdgeDetectionFilter>(std::stod(fg.arguments[0]));
                 break;
             case FilterName::Gaussian:
-                current = std::make_unique<GaussianBlurFilter>();
+                current = std::make_unique<GaussianBlurFilter>(std::stod(fg.arguments[0]));
                 break;
             case FilterName::GrayScale:
                 current = std::make_unique<GrayScaleFilter>();
@@ -59,8 +65,8 @@ std::vector<std::unique_ptr<Filter>> GenerateFilters(const ParserResults& parsed
                 break;
             case FilterName::Saturate:
                 if (fg.arguments.size() != 2 || (fg.arguments[0] != "plus" && fg.arguments[0] != "minus")) {
-                    throw new std::invalid_argument(
-                        "Saturate filter excepts 2 argments: sign in {plus, minus} and and integer between 0 and 255");
+                    throw std::invalid_argument(
+                        "Saturate filter excepts 2 arguments: sign in {plus, minus} and and integer between 0 and 255");
                 }
                 current = std::make_unique<SaturateFilter>(fg.arguments[0] == "plus", std::stoll(fg.arguments[1]));
                 break;

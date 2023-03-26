@@ -100,7 +100,6 @@ void SaturateFilter::operator()(Image &image) const {
             auto hsv = RgbToHsv(pixel);
             if (add) {
                 hsv.s += saturation_delta;
-                // std::cout << (int)(hsv.s) << '\n';
                 hsv.s = std::min(Pixel::PixelMax, hsv.s);
             } else {
                 hsv.s = hsv.s >= saturation_delta ? hsv.s - saturation_delta : 0;
