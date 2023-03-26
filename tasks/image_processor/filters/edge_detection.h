@@ -5,10 +5,10 @@
 
 class EdgeDetectionFilter : public MatrixFilter {
 public:
-    explicit EdgeDetectionFilter(double threshhold);
+    explicit EdgeDetectionFilter(double threshold);
 
     Pixel ApplyToPixel(const Kernel &kernel) const override;
 
 private:
-    double threshhold_;
+    double threshold_;
 };
