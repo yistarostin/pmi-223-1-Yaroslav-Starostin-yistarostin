@@ -3,9 +3,10 @@
 
 class GaussianBlurFilter : public Filter {
 public:
-    GaussianBlurFilter();
+    GaussianBlurFilter(double sigma);
 
     void operator()(Image &image) const override;
 
     ~GaussianBlurFilter() noexcept override;
+    double sigma_;
 };
