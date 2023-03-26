@@ -10,7 +10,7 @@ ParserResults Parser::Parse(int argc, char *argv[]) const {
         if (argv[index][0] == '-') {
             FilterConfig config;
             auto filter_name = std::string(argv[index]).substr(1);
-            config.name = FILTERS_MAPING.at(filter_name);
+            config.name = FILTERS_MAPPING.at(filter_name);
             if (filter_name == "edge") {
                 need_grayscale = true;
             }

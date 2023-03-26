@@ -10,6 +10,7 @@
 #include "filters/grayscale.h"
 #include "filters/negative.h"
 #include "filters/sharpening.h"
+#include "filters/ultralize.h"
 #include "io.h"
 #include "parser.h"
 
@@ -50,6 +51,10 @@ std::vector<std::unique_ptr<Filter>> GenerateFilters(const ParserResults& parsed
             case FilterName::Sharpening:
                 current = std::make_unique<SharpeningFilter>();
                 break;
+            case FilterName::Ultralize:
+                current = std::make_unique<UltralizeFilter>();
+                break;
+
         }
         filters.push_back(std::move(current));
     }
