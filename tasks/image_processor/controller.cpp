@@ -58,7 +58,7 @@ std::vector<std::unique_ptr<Filter>> GenerateFilters(const ParserResults& parsed
                 current = std::make_unique<SharpeningFilter>();
                 break;
             case FilterName::Saturate:
-                if (fg.arguments.size() != 2 || fg.arguments[0] != "plus" && fg.arguments[0] != "minus") {
+                if (fg.arguments.size() != 2 || (fg.arguments[0] != "plus" && fg.arguments[0] != "minus")) {
                     throw new std::invalid_argument(
                         "Saturate filter excepts 2 argments: sign in {plus, minus} and and integer between 0 and 255");
                 }
