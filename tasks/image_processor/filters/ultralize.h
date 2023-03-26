@@ -24,6 +24,6 @@ public:
         }
     }
 
-    ~UltralizeFilter() noexcept {
+    ~UltralizeFilter() noexcept override{
     }
 };
