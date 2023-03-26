@@ -18,7 +18,6 @@ void ApplyFilters(Image& image, const std::vector<std::unique_ptr<Filter>>& filt
 std::vector<std::unique_ptr<Filter>> GenerateFilters(const ParserResults& parsed_results);
 
 bool Controller::Run(int argc, char** argv) const {
-    // return true;
     ParserResults parsed_results = Parser().Parse(argc, argv);
     auto filters = GenerateFilters(parsed_results);
     auto image = IO(parsed_results.input_path).Read();

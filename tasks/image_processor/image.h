@@ -13,12 +13,11 @@ using Bytes = std::vector<std::byte>;
 
 class Image {
 public:
-    // explicit Image(const Image& image);
     RowImage colors_;
     BitMapHeader bitMapHeader_;
     InfoHeader infoHeader_;
 
-    Kernel GetPixelWithNeighbours(std::size_t y, std::size_t x) {  // TODO: fix bound
+    Kernel GetPixelWithNeighbours(std::size_t y, std::size_t x) {
         auto under = y == colors_.size() - 1 ? colors_[y][x] : colors_[y + 1][x];
         auto above = y == 0 ? colors_[y][x] : colors_[y - 1][x];
         auto right = x == colors_.back().size() - 1 ? colors_[y][x] : colors_[y][x + 1];
