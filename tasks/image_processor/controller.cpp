@@ -9,21 +9,29 @@
 #include "filters/gaussian_blur.h"
 #include "filters/grayscale.h"
 #include "filters/negative.h"
+#include "filters/saturate.h"
 #include "filters/sharpening.h"
-#include "filters/ultralize.h"
 #include "io.h"
 #include "parser.h"
 
 void ApplyFilters(Image& image, const std::vector<std::unique_ptr<Filter>>& filters);
 std::vector<std::unique_ptr<Filter>> GenerateFilters(const ParserResults& parsed_results);
 
-bool Controller::Run(int argc, char** argv) const {
+void PrintUsage() {
+    std::cout << "Simple bmp processor\n--------------------\nAvailable Commands:\n...\n";
+}
+
+void Controller::Run(int argc, char** argv) const {
+    if (argc == 1) {
+        PrintUsage();
+        return;
+    }
+
     ParserResults parsed_results = Parser().Parse(argc, argv);
     auto filters = GenerateFilters(parsed_results);
     auto image = IO(parsed_results.input_path).Read();
     ApplyFilters(image, filters);
-    auto success = IO(parsed_results.output_path).Write(image);
-    return success;
+    IO(parsed_results.output_path).Write(image);
 }
 
 std::vector<std::unique_ptr<Filter>> GenerateFilters(const ParserResults& parsed_results) {
@@ -32,7 +40,6 @@ std::vector<std::unique_ptr<Filter>> GenerateFilters(const ParserResults& parsed
         std::unique_ptr<Filter> current;
         switch (fg.name) {
             case FilterName::Crop:
-                // current = make_unqiue(CropFilter(std::stoul(fg.arguments[0]), std::stoul(fg.arguments[1])));
                 current = std::make_unique<CropFilter>(std::stoul(fg.arguments[0]), std::stoul(fg.arguments[1]));
                 break;
             case FilterName::EdgeDetection:
@@ -50,8 +57,12 @@ std::vector<std::unique_ptr<Filter>> GenerateFilters(const ParserResults& parsed
             case FilterName::Sharpening:
                 current = std::make_unique<SharpeningFilter>();
                 break;
-            case FilterName::Ultralize:
-                current = std::make_unique<UltralizeFilter>();
+            case FilterName::Saturate:
+                if (fg.arguments.size() != 2 || fg.arguments[0] != "plus" && fg.arguments[0] != "minus") {
+                    throw new std::invalid_argument(
+                        "Saturate filter excepts 2 argments: sign in {plus, minus} and and integer between 0 and 255");
+                }
+                current = std::make_unique<SaturateFilter>(fg.arguments[0] == "plus", std::stoll(fg.arguments[1]));
                 break;
         }
         filters.push_back(std::move(current));

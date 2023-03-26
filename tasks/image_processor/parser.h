@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <vector>
 
-enum FilterName { Gaussian, Crop, EdgeDetection, GrayScale, Negative, Sharpening, Ultralize };
+enum FilterName { Gaussian, Crop, EdgeDetection, GrayScale, Negative, Sharpening, Saturate };
 
 struct FilterConfig {
     FilterName name;
@@ -11,8 +11,8 @@ struct FilterConfig {
 };
 
 const std::unordered_map<std::string, FilterName> FILTERS_MAPPING = {
-    {"crop", Crop},          {"sharp", Sharpening}, {"gs", GrayScale},   {"neg", Negative},
-    {"edge", EdgeDetection}, {"blur", Gaussian},    {"ultra", Ultralize}};
+    {"crop", Crop},          {"sharp", Sharpening}, {"gs", GrayScale},     {"neg", Negative},
+    {"edge", EdgeDetection}, {"blur", Gaussian},    {"saturate", Saturate}};
 
 struct ParserResults {
     std::string input_path;

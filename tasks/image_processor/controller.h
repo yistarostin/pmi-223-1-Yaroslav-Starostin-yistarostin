@@ -1,6 +1,7 @@
 #pragma once
+void PrintUsage();
 
 class Controller {
 public:
-    bool Run(int argc, char* argv[]) const;
+    void Run(int argc, char* argv[]) const;
 };
