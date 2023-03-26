@@ -54,7 +54,6 @@ std::vector<std::unique_ptr<Filter>> GenerateFilters(const ParserResults& parsed
             case FilterName::Ultralize:
                 current = std::make_unique<UltralizeFilter>();
                 break;
-
         }
         filters.push_back(std::move(current));
     }

@@ -10,9 +10,9 @@ struct FilterConfig {
     std::vector<std::string> arguments;
 };
 
-const std::unordered_map<std::string, FilterName> FILTERS_MAPPING = {{"crop", Crop},          {"sharp", Sharpening},
-                                                                    {"gs", GrayScale},       {"neg", Negative},
-                                                                    {"edge", EdgeDetection}, {"blur", Gaussian}, {"ultra", Ultralize}};
+const std::unordered_map<std::string, FilterName> FILTERS_MAPPING = {
+    {"crop", Crop},          {"sharp", Sharpening}, {"gs", GrayScale},   {"neg", Negative},
+    {"edge", EdgeDetection}, {"blur", Gaussian},    {"ultra", Ultralize}};
 
 struct ParserResults {
     std::string input_path;

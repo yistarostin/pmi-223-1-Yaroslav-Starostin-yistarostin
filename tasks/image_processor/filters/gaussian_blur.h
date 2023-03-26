@@ -3,12 +3,9 @@
 
 class GaussianBlurFilter : public Filter {
 public:
-    GaussianBlurFilter() {
-    }
+    GaussianBlurFilter();
 
-    void operator()(Image &image) const override {
-        ;  // TODO implement gau
-    }
+    void operator()(Image &image) const override;
 
-    ~GaussianBlurFilter() override{};
+    ~GaussianBlurFilter() noexcept override;
 };
