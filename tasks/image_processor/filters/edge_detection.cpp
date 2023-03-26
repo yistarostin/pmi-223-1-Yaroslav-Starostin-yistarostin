@@ -1,6 +1,6 @@
 #include "edge_detection.h"
 
-EdgeDetectionFilter::EdgeDetectionFilter(double threshold) : threshhold_(threshhold) {
+EdgeDetectionFilter::EdgeDetectionFilter(double threshold) : threshold_(threshold) {
 }
 
 Pixel EdgeDetectionFilter::ApplyToPixel(const Kernel &kernel) const {
