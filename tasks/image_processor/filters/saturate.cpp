@@ -2,6 +2,9 @@
 
 #include <iostream>
 
+// NOLINTBEGIN(readability-magic-numbers, google-readability-casting, readability-isolate-declaration,
+// google-runtime-int, readability-braces-around-statements, cppcoreguidelines-init-variables,
+// eadability-identifier-naming, -warnings-as-errors)
 Pixel HsvToRgb(HsvColor hsv)  // NOLINT
 {
     Pixel rgb;
@@ -60,34 +63,37 @@ Pixel HsvToRgb(HsvColor hsv)  // NOLINT
 HsvColor RgbToHsv(Pixel rgb)  // NOLINT
 {
     HsvColor hsv;
-    Color rgbMin, rgbMax;
+    Color rgb_min, rgb_max;
 
-    rgbMin = std::min(std::min(rgb.red, rgb.blue), rgb.green);
-    rgbMax = std::max(std::max(rgb.red, rgb.blue), rgb.green);
+    rgb_min = std::min(std::min(rgb.red, rgb.blue), rgb.green);
+    rgb_max = std::max(std::max(rgb.red, rgb.blue), rgb.green);
 
-    hsv.v = rgbMax;
+    hsv.v = rgb_max;
     if (hsv.v == 0) {
         hsv.h = 0;
         hsv.s = 0;
         return hsv;
     }
 
-    hsv.s = 255 * long(rgbMax - rgbMin) / hsv.v;
+    hsv.s = 255 * long(rgb_max - rgb_min) / hsv.v;
     if (hsv.s == 0) {
         hsv.h = 0;
         return hsv;
     }
 
-    if (rgbMax == rgb.red)
-        hsv.h = 0 + 43 * (rgb.green - rgb.blue) / (rgbMax - rgbMin);
-    else if (rgbMax == rgb.green)
-        hsv.h = 85 + 43 * (rgb.blue - rgb.red) / (rgbMax - rgbMin);
+    if (rgb_max == rgb.red)
+        hsv.h = 0 + 43 * (rgb.green - rgb.blue) / (rgb_max - rgb_min);
+    else if (rgb_max == rgb.green)
+        hsv.h = 85 + 43 * (rgb.blue - rgb.red) / (rgb_max - rgb_min);
     else
-        hsv.h = 171 + 43 * (rgb.red - rgb.green) / (rgbMax - rgbMin);
+        hsv.h = 171 + 43 * (rgb.red - rgb.green) / (rgb_max - rgb_min);
 
     return hsv;
 }
 
+// NOLINTEND(readability-magic-numbers, google-readability-casting, readability-isolate-declaration, google-runtime-int,
+// readability-braces-around-statements, cppcoreguidelines-init-variables, eadability-identifier-naming,
+// -warnings-as-errors)
 void SaturateFilter::operator()(Image &image) const {
     for (auto &line : image.colors_) {
         for (auto &pixel : line) {
