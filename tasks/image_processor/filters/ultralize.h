@@ -14,11 +14,11 @@ public:
                 auto &[r, g, b] = pixel;
                 auto maximum_color = std::max(std::max(r, g), b);
                 if (maximum_color == r) {
-                    pixel = {255, 0, 0};
+                    pixel = {Pixel::PixelMax, 0, 0};
                 } else if (maximum_color == g) {
-                    pixel = {0, 255, 0};
+                    pixel = {0, Pixel::PixelMax, 0};
                 } else {
-                    pixel = {0, 0, 255};
+                    pixel = {0, 0, Pixel::PixelMax};
                 }
             }
         }

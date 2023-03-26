@@ -2,10 +2,11 @@
 #pragma once
 #include "filter.h"
 
+static const constexpr double RED = 0.299;
+static const constexpr double GREEN = 0.587;
+static const constexpr double BLUE = 0.114;
+
 class GrayScaleFilter : public Filter {
-    const double RED = 0.299;
-    const double GREEN = 0.587;
-    const double BLUE = 0.114;
 
 public:
     GrayScaleFilter();
